@@ -52,8 +52,8 @@ class functionalities:
 		c = (-1 * config.partyNum * E * F) + (a * F) + (E * b) + z
 		C = reconstruct(c)
 		return c+C
-		
-	def matrixmul():
+
+	#def matrixmul():
 		
 
 

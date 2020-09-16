@@ -1,47 +1,41 @@
 import random
+import numpy as np
 
 def generatedata():
-    n = random.randint(2,10)
-    d = random.randint(2,5)
-    X=[]
-    U=[]
-    V=[]
-    Z=[]
-    Vdash=[]
-    Zdash=[]
-    for i in range(n):
-        X.append(random.sample(range(10, 100), d+1))
-        U.append(random.sample(range(10, 100), d))
-    V = random.sample(range(10, 100), d)
-    Vdash = random.sample(range(10, 100), n)
-    Z = random.sample(range(10, 100), n)
-    for i in range(d):
-        Zdash.append(random.sample(range(10, 100), n))
+    n = 5
+    d = 3
+    t = n
+    batchsize=1
+    z=[]
+    z_dash=[]
+
+    xy = np.random.randint(low = 100, size = (n, d+1)) 
+    u = np.random.randint(low = 100,size = (n,d))
     
-    print(X)
-    print(V)
-    with open('data.txt','w') as f:
-        for i in range(len(X)):
-            f.writelines("%d " % e for e in X[i])
-            f.writelines("\n")
-        f.close()
+    v = np.random.randint(low = 100,size = (d,t))
+    v_dash = np.random.randint(low = 100,size = (batchsize,t))
+
+    z = np.zeros((1,t),dtype=int)
+    z_dash= np.zeros((d,t),dtype=int)
+   
+    for i in range(len(u)):
+        z[:,i]= (np.matmul(u[i],v[:,i])) #multiplying a row of u with a column of v
+        u_row_tranpose = np.transpose(np.matrix(u[i]))
+        #print(u_row_tranpose)
+        z_dash[:,i]=np.matmul(u_row_tranpose,v_dash[:,i]) # print(np.transpose(np.matrix(u[0]))) 
     
-    with open('mask.txt','w') as f:
-        for i in range(len(U)):
-            f.writelines("%d " % e for e in U[i])
-            f.writelines("\n")
-        
-        f.writelines("%d " % e for e in V)
-        f.writelines("\n")
-        f.writelines("%d " % e for e in Vdash)
-        f.writelines("\n")
-        f.writelines("%d " % e for e in Z)
-        f.writelines("\n")
+    
+    np.savetxt('data.txt', xy, delimiter=' ',fmt='%d')
+    
+    with open('mask.txt','a+') as f:
+        np.savetxt(f,u,delimiter=' ',fmt='%d')
+        np.savetxt(f,v,delimiter=' ',fmt='%d')
+        np.savetxt(f,v_dash,delimiter=' ',fmt='%d')
+        np.savetxt(f,z,delimiter=' ',fmt='%d')
+        np.savetxt(f,z_dash,delimiter=' ',fmt='%d')
 
-        for i in range(len(Zdash)):
-            f.writelines("%d " % e for e in Zdash[i])
-            f.writelines("\n")
+def main():
+    generatedata()
 
-        f.close()
-
-generatedata()
+if __name__ == '__main__':
+    main()
