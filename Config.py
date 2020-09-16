@@ -7,3 +7,7 @@ class Config:
 	advIP = IP 
 	advPORT = -1
 	l = 64
+	n=-1
+	d=-1
+	t=-1
+	batchsize=1
