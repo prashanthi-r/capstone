@@ -3,60 +3,65 @@ import sys
 import itertools
 import numpy as np
 
-def readData(filename_data,filename_mask):
-    # X n*d matrix
-    # Y n*1 matrix
-    # w d*1 matrix
-    # U n*d matrix
-    # V d*t matrix
-    # V' 1*t matrix mask the difference Y - Y^
-    # Z 1*n matrix
-    # Z'd*t matrix (U_b transpose * V'[i]) 
+class linearReg:
 
-    mask=[]
-    X=[]    
-    Y=[]
-    U=[]
-    V=[]
-    V_dash=[] 
-    Z=[]
-    Z_dash=[]
-    with open(filename_data,'r') as f:
-        for line in f:
-            row=line.split()
-            Y.append(int(row[-1].rstrip())) #last element
-            X.append((row[:-1])) #all elements except the last element
-        f.close()
+    def readData(filename_data,filename_mask):
+        # X n*d matrix
+        # Y n*1 matrix
+        # w d*1 matrix
+        # U n*d matrix
+        # V d*t matrix
+        # V' 1*t matrix mask the difference Y - Y^
+        # Z 1*n matrix
+        # Z'd*t matrix (U_b transpose * V'[i]) 
 
-    #X = list(map(int, X))
+        mask=[]
+        X=[]    
+        Y=[]
+        U=[]
+        V=[]
+        V_dash=[] 
+        Z=[]
+        Z_dash=[]
+        with open(filename_data,'r') as f:
+            for line in f:
+                row=line.split()
+                Y.append(int(row[-1].rstrip())) #last element
+                X.append((row[:-1])) #all elements except the last element
+            f.close()
 
-    config.n = len(Y)
-    config.d = len(X[0])
-    config.t = config.n
+        #X = list(map(int, X))
 
-    with open(filename_mask,'r') as f:
-        for line in f:
-            mask.append(line.split())
-        f.close()
+        config.n = len(Y)
+        config.d = len(X[0])
+        config.t = config.n
 
-    #mask = list(map(int, mask)) 
-    n = config.n 
-    d = config.d
-    t = config.t
-    b = config.batchsize
+        with open(filename_mask,'r') as f:
+            for line in f:
+                mask.append(line.split())
+            f.close()
 
-    U = mask[:n]
-    V = mask[n:n+d]
-    Vdash = mask[n+d: n+d+1]
-    Z = mask[n+d+1:n+d+2]
-    Zdash=mask[n+d+2:]
-    # print(U)
-    # print(V)
-    # print(Vdash)
-    # print(Z)
-    # print(Zdash)
+        #mask = list(map(int, mask)) 
+        n = config.n 
+        d = config.d
+        t = config.t
+        b = config.batchsize
+
+        U = mask[:n]
+        V = mask[n:n+d]
+        Vdash = mask[n+d: n+d+1]
+        Z = mask[n+d+1:n+d+2]
+        Zdash=mask[n+d+2:]
+        # print(U)
+        # print(V)
+        # print(Vdash)
+        # print(Z)
+        # print(Zdash)
 
 
-filename_data= sys.argv[1]
-filename_mask = sys.argv[2]
-readData(filename_data,filename_mask)
+    filename_data= sys.argv[1]
+    filename_mask = sys.argv[2]
+    readData(filename_data,filename_mask)
+
+    def regression():
+        

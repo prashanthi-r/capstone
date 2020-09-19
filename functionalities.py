@@ -4,6 +4,7 @@ from Config import Config as config
 import socket
 import pickle 
 import random
+import numpy as np
 
 class functionalities:
 	def send_val(send_info):
@@ -28,17 +29,15 @@ class functionalities:
 
 	def addshares(a, b, mask):
 		sendlist = []
-		sum1 = (a + b) 
+		sum1 = (a + b + mask) 
 		sendlist.append(sum1)
 		sum2 = send_val(sendlist)
 		
 		return sum1+sum2[0]
 
 	def reconstruct(c):
-		sendlist=[]
-		sendlist.append(c)
-		C = send_val(sendlist)
-		return C[0]
+		C = send_val(c)
+		return C
 
 	def multiplyshares(a,b,u,v,z):
 		sendlist = []
@@ -50,10 +49,31 @@ class functionalities:
 		E = e + recv_info[0]
 		F = f + recv_info[1]
 		c = (-1 * config.partyNum * E * F) + (a * F) + (E * b) + z
-		C = reconstruct(c)
-		return c+C
+		sendlist=[]
+		sendlist.append(c)
+		C = reconstruct(sendlist)
+		return C[0]+c
 
-	#def matrixmul():
+	def matrixadd(A,B,mask):
+		sum1 = np.add(np.array(A),np.array(B))
+		sum2 = send_val(sum1.tolist())		
+
+		return (np.add(np.array(sum2)),sum1).tolist()
+
+	def matrixmul(A,B,U,V,Z):
+		A = np.array(A)
+		B = np.array(B)
+		U = np.array(U)
+		V = np.array(V)
 		
+		E = np.subtract(A,U)
+		F = np.subtract(B,V)
+		recv_e = send_val(E.tolist())
+		recv_f = send_val(F.tolist())
 
+		c = np.add(-1 * config.partyNum * (np.multiply(E,F)),np.multiply(A*F) + np.multiply(E*B))
+		C = reconstruct(c.tolist())
 
+		C = (np.add(np.array(C),c).tolist())
+		
+		return C 
