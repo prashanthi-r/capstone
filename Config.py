@@ -11,3 +11,4 @@ class Config:
 	d=-1
 	t=-1
 	batchsize=1
+	alpha = 0.01 # learning rate

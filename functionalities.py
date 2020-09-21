@@ -86,19 +86,20 @@ class functionalities:
 		
 		return C
 
-	def matrixmul_linearReg(A,B,E,V,Z):
+	def matrixmul_reg(A,B,E,F,V,Z):
 		A = np.array(A) #data pt
 		B = np.array(B) #weights
 		E = np.array(U) # datapoint - mask
+		F = np.array(F) 
 		V = np.array(V) #mask of weights for this batch
 		Z = np.array(Z) #u[j]v[j] ->weight's mask for that batch
 
-		F = np.subtract(B,V)
-		recv_f = send_val(F.tolist())
-		F = F + recv_f[0]
-		Yhat = np.add(-1 * config.partyNum * (np.multiply(E,F)),np.multiply(A*F) + np.multiply(E*B))
+		# F = np.subtract(B,V)
+		# recv_f = send_val(F.tolist())
+		# F = F + recv_f[0]
+		
+		Yhat1 = np.add(-1 * config.partyNum * (np.multiply(E,F)),np.multiply(A,F))
+		Yhat2 = np.add(np.multiply(E,B),Z)
+		Yhat = np.add(Yhat1,Yhat2)
 
-
-
-
-	
+		return Yhat

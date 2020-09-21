@@ -2,7 +2,9 @@ from Config import Config as config
 import sys
 import itertools
 import numpy as np
-from functionalities import functionalities
+from functionalities import functionalities as func
+import random
+import math
 
 class linearReg:
 
@@ -28,7 +30,7 @@ class linearReg:
             for line in f:
                 row=line.split()
                 Y.append(int(row[-1].rstrip())) #last element
-                X.append((row[:-1])) #all elements except the last element
+                X.append([row[:-1]]) #all elements except the last element
             f.close()
 
         #X = list(map(int, X))
@@ -55,15 +57,55 @@ class linearReg:
         
         return X,Y,U,V,Vdash,Z,Zdash
 
-    def regression(X,Y,U,V,vDash,Z,zDash):
-        E = np.subtract(X,U)
-        send
-
-
-
-
-    # def main():
-    #     filename_data= sys.argv[1]
-    #     filename_mask = sys.argv[2]
-    #     readData(filename_data,filename_mask)
+    def LinReg(X,Y,U,V,VDash,Z,ZDash):
         
+        ZDash = (np.matmul(np.array(U).transpose,VDash).tolist())
+
+        E1 = np.subtract(np.array(X),np.array(U))
+        E2 = func.reconstruct(E1.tolist())
+        E = (np.add(np.array(E1),np.array(E2)).tolist())
+
+        # randomly initialise weights vector
+        weights = [random.random() for i in range(config.d)]
+
+
+        for j in range config.t: 
+
+            X_B = X[j:j+config.b]
+            Y_B = Y[j:j+config.b]
+            E_B = E[j:j+config.b]
+            U_j = U[j]
+            V_j = V[j]
+            Z_j = Z[j]
+            Vdash_j = VDash[j]
+            Zdash_j = ZDash[j]
+
+
+            F1 = np.subtract(np.array(weights),np.array(V[j]))
+            F2 = func.reconstruct(F1.tolist())
+            F = (np.add(np.array(F1),np.array(F2)).tolist())
+
+
+            YB_dash = matrixmul_reg(X_B,weights,E_B,F,V_j,Z_j)
+
+            D_B = np.add(YB_dash,np.array(Y_B))
+
+            Fdash_1 = np.subtract(D_B,Vdash_j)
+            Fdash_2 = func.reconstruct(Fdash_1)
+            FDash = (np.add(np.array(Fdash_1),np.array(Fdash_2)).tolist())
+
+            X_B = np.array(X_B).transpose()
+            E_B = np.array(E_B).transpose()
+
+            Del_J = matrixmul_reg(X_B.tolist(),D_B,E_B.tolist(),FDash,Vdash_j,Zdash_j).tolist() # the partial differentiation of the loss function
+            for i in range(d):
+                Del_J[i] = math.floor(Del_J[i])
+
+
+            weights = np.subtract(np.array(weights),(alpha*(1/config.batchsize)*np.array(Del_J))).tolist()
+
+        weights2 = reconstruct(weights)
+
+        model = np.add(np.array(weights2),np.array(weights)).tolist()
+        
+        return model
