@@ -68,12 +68,37 @@ class functionalities:
 		
 		E = np.subtract(A,U)
 		F = np.subtract(B,V)
-		recv_e = send_val(E.tolist())
-		recv_f = send_val(F.tolist())
+
+		sendlist = []
+		sendlist.append(E.tolist())
+		sendlist.append(F.tolist())
+		recv_info = send_val(sendlist)
+
+		# recv_e = send_val(E.tolist())
+		# recv_f = send_val(F.tolist())
+		E = E + recv_info[0]
+		F = F + recv_info[1]
 
 		c = np.add(-1 * config.partyNum * (np.multiply(E,F)),np.multiply(A*F) + np.multiply(E*B))
 		C = reconstruct(c.tolist())
 
 		C = (np.add(np.array(C),c).tolist())
 		
-		return C 
+		return C
+
+	def matrixmul_linearReg(A,B,E,V,Z):
+		A = np.array(A) #data pt
+		B = np.array(B) #weights
+		E = np.array(U) # datapoint - mask
+		V = np.array(V) #mask of weights for this batch
+		Z = np.array(Z) #u[j]v[j] ->weight's mask for that batch
+
+		F = np.subtract(B,V)
+		recv_f = send_val(F.tolist())
+		F = F + recv_f[0]
+		Yhat = np.add(-1 * config.partyNum * (np.multiply(E,F)),np.multiply(A*F) + np.multiply(E*B))
+
+
+
+
+	

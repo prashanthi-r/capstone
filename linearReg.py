@@ -2,6 +2,7 @@ from Config import Config as config
 import sys
 import itertools
 import numpy as np
+from functionalities import functionalities
 
 class linearReg:
 
@@ -41,7 +42,6 @@ class linearReg:
                 mask.append(line.split())
             f.close()
 
-        #mask = list(map(int, mask)) 
         n = config.n 
         d = config.d
         t = config.t
@@ -52,16 +52,18 @@ class linearReg:
         Vdash = mask[n+d: n+d+1]
         Z = mask[n+d+1:n+d+2]
         Zdash=mask[n+d+2:]
-        # print(U)
-        # print(V)
-        # print(Vdash)
-        # print(Z)
-        # print(Zdash)
+        
+        return X,Y,U,V,Vdash,Z,Zdash
+
+    def regression(X,Y,U,V,vDash,Z,zDash):
+        E = np.subtract(X,U)
+        send
 
 
-    filename_data= sys.argv[1]
-    filename_mask = sys.argv[2]
-    readData(filename_data,filename_mask)
 
-    def regression():
+
+    # def main():
+    #     filename_data= sys.argv[1]
+    #     filename_mask = sys.argv[2]
+    #     readData(filename_data,filename_mask)
         
