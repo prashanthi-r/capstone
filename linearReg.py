@@ -90,7 +90,7 @@ class linearReg:
             F = (np.add(np.array(F1),np.array(F2)).tolist())
 
 
-            YB_dash = matrixmul_reg(X_B,weights,E_B,F,V_j,Z_j)
+            YB_dash = func.matrixmul_reg(X_B,weights,E_B,F,V_j,Z_j)
 
             D_B = np.add(YB_dash,np.array(Y_B))
 
@@ -101,7 +101,7 @@ class linearReg:
             X_B = np.array(X_B).transpose()
             E_B = np.array(E_B).transpose()
 
-            Del_J = matrixmul_reg(X_B.tolist(),D_B,E_B.tolist(),FDash,Vdash_j,Zdash_j).tolist() # the partial differentiation of the loss function
+            Del_J = func.matrixmul_reg(X_B.tolist(),D_B,E_B.tolist(),FDash,Vdash_j,Zdash_j).tolist() # the partial differentiation of the loss function
             for i in range(d):
                 Del_J[i] = math.floor(Del_J[i])
 

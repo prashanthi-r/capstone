@@ -89,7 +89,7 @@ class functionalities:
 	def matrixmul_reg(A,B,E,F,V,Z):
 		A = np.array(A) #data pt
 		B = np.array(B) #weights
-		E = np.array(U) # datapoint - mask
+		E = np.array(E) # datapoint - mask
 		F = np.array(F) 
 		V = np.array(V) #mask of weights for this batch
 		Z = np.array(Z) #u[j]v[j] ->weight's mask for that batch
