@@ -30,10 +30,10 @@ class linearReg:
             for line in f:
                 row=line.split()
                 Y.append(int(row[-1].rstrip())) #last element
-                X.append([row[:-1]]) #all elements except the last element
+                row= [int(i, base=10) for i in row]
+                X.append(row[:-1]) #all elements except the last element
             f.close()
 
-        #X = list(map(int, X))
 
         config.n = len(Y)
         config.d = len(X[0])
@@ -41,8 +41,11 @@ class linearReg:
 
         with open(filename_mask,'r') as f:
             for line in f:
-                mask.append(line.split())
+                row=line.split()
+                row=[int(i, base=10) for i in row]
+                mask.append(row)
             f.close()
+
 
         n = config.n 
         d = config.d
@@ -59,8 +62,9 @@ class linearReg:
 
     def LinReg(X,Y,U,V,VDash,Z,ZDash):
         
-        ZDash = (np.matmul(np.array(U).transpose,VDash).tolist())
-
+        #ZDash = (np.matmul(np.array(U).transpose,VDash).tolist())
+        # print(np.array(X))
+        # print(np.array(U))
         E1 = np.subtract(np.array(X),np.array(U))
         E2 = func.reconstruct(E1.tolist())
         E = (np.add(np.array(E1),np.array(E2)).tolist())
@@ -69,19 +73,20 @@ class linearReg:
         weights = [random.random() for i in range(config.d)]
 
 
-        for j in range config.t: 
+        for j in range(config.t): 
 
-            X_B = X[j:j+config.b]
-            Y_B = Y[j:j+config.b]
-            E_B = E[j:j+config.b]
-            U_j = U[j]
-            V_j = V[j]
+            X_B = X[j:j+config.batchsize]
+            Y_B = Y[j:j+config.batchsize]
+            E_B = E[j:j+config.batchsize]
+            print(V[:,j])
+            V_j = V[:,j]
+            
             Z_j = Z[j]
-            Vdash_j = VDash[j]
+            Vdash_j = VDash[:,j]
             Zdash_j = ZDash[j]
 
 
-            F1 = np.subtract(np.array(weights),np.array(V[j]))
+            F1 = np.subtract(np.array(weights),np.array(V_j))
             F2 = func.reconstruct(F1.tolist())
             F = (np.add(np.array(F1),np.array(F2)).tolist())
 
@@ -104,7 +109,7 @@ class linearReg:
 
             weights = np.subtract(np.array(weights),(alpha*(1/config.batchsize)*np.array(Del_J))).tolist()
 
-        weights2 = reconstruct(weights)
+        weights2 = func.reconstruct(weights)
 
         model = np.add(np.array(weights2),np.array(weights)).tolist()
         

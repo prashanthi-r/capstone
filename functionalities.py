@@ -36,7 +36,7 @@ class functionalities:
 		return sum1+sum2[0]
 
 	def reconstruct(c):
-		C = send_val(c)
+		C = functionalities.send_val(c)
 		return C
 
 	def multiplyshares(a,b,u,v,z):

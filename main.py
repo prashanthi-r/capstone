@@ -1,6 +1,6 @@
 from Config import Config as config
 import sys
-from functionalites import functionalites as func
+from functionalities import functionalities as func
 from linearReg import linearReg as linearReg
 
 # command line argument - partyNum, integer input a, integer input b, mask value
@@ -32,11 +32,19 @@ def main():
     # print(output_mul)
 
     ############ linear regression ############
-    filename_data = str(sys.argv[2])
-    filename_mask = str(sys.argv[3])
+    # filename_data = str(sys.argv[2])
+    # filename_mask = str(sys.argv[3])
+
+    if config.partyNum==0:
+        filename_data='data0.txt'
+        filename_mask='mask0.txt'
+    else:
+        filename_data='data1.txt'
+        filename_mask='mask1.txt'
 
     X,Y,U,V,Vdash,Z,Zdash = linearReg.readData(filename_data,filename_mask)
     model = linearReg.LinReg(X,Y,U,V,Vdash,Z,Zdash)
+    print(model)
 
 
 
