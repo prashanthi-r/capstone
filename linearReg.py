@@ -71,16 +71,15 @@ class linearReg:
 
         # randomly initialise weights vector
         weights = [random.random() for i in range(config.d)]
-
+        V = np.array(V)
+        VDash = np.array(VDash)
 
         for j in range(config.t): 
 
             X_B = X[j:j+config.batchsize]
             Y_B = Y[j:j+config.batchsize]
             E_B = E[j:j+config.batchsize]
-            print(V[:,j])
             V_j = V[:,j]
-            
             Z_j = Z[j]
             Vdash_j = VDash[:,j]
             Zdash_j = ZDash[j]
