@@ -7,8 +7,8 @@ from linearReg import linearReg as linearReg
 # main
 def main():
     config.partyNum = int(sys.argv[1])
-
-    if(config.partyNum == 0):
+    print(config.partyNum)
+    if config.partyNum == 0:
         config.PORT = 8002
         config.advPORT = 8003
     else: 
