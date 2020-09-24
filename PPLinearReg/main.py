@@ -1,4 +1,4 @@
-from Config import Config as config
+from Config import Config as conf
 import sys
 from functionalities import functionalities as func
 from linearReg import linearReg as linearReg
@@ -6,14 +6,14 @@ from linearReg import linearReg as linearReg
 # command line argument - partyNum, integer input a, integer input b, mask value
 # main
 def main():
-    config.partyNum = int(sys.argv[1])
-    print(config.partyNum)
-    if config.partyNum == 0:
-        config.PORT = 8002
-        config.advPORT = 8003
+    conf.partyNum = int(sys.argv[1])
+    print(conf.partyNum)
+    if conf.partyNum == 0:
+        conf.PORT = 8002
+        conf.advPORT = 8003
     else: 
-        config.PORT = 8003
-        config.advPORT = 8002
+        conf.PORT = 8003
+        conf.advPORT = 8002
     
     ############# add float shares ################
     # a = float(sys.argv[2])
@@ -35,7 +35,7 @@ def main():
     # filename_data = str(sys.argv[2])
     # filename_mask = str(sys.argv[3])
 
-    if config.partyNum==0:
+    if conf.partyNum==0:
         filename_data='data0.txt'
         filename_mask='mask0.txt'
     else:
@@ -44,6 +44,7 @@ def main():
 
     X,Y,U,V,Vdash,Z,Zdash = linearReg.readData(filename_data,filename_mask)
     model = linearReg.SGDLinear(X,Y,U,V,Vdash,Z,Zdash)
+    model = func.truncate(model)
     print(model)
 
 

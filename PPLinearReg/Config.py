@@ -6,8 +6,12 @@ class Config:
 	IP = socket.gethostbyname(socket.gethostname())
 	advIP = IP 
 	advPORT = -1
-	l = 32
+	l = 64
 	modl = 2**l
+	precision = 16
+	converttoint64 = (1<<precision)
+
+	# data specific
 	n=-1
 	d=-1
 	t=-1
