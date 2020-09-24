@@ -5,6 +5,7 @@ import socket
 import pickle 
 import random
 import numpy as np
+from mod import Mod
 
 class functionalities:
 	def send_val(send_info):

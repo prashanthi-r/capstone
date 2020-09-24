@@ -43,7 +43,7 @@ def main():
         filename_mask='mask1.txt'
 
     X,Y,U,V,Vdash,Z,Zdash = linearReg.readData(filename_data,filename_mask)
-    model = linearReg.LinReg(X,Y,U,V,Vdash,Z,Zdash)
+    model = linearReg.SGDLinear(X,Y,U,V,Vdash,Z,Zdash)
     print(model)
 
 

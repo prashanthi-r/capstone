@@ -29,8 +29,8 @@ class linearReg:
         with open(filename_data,'r') as f:
             for line in f:
                 row=line.split()
-                Y.append(int(row[-1].rstrip())) #last element
-                row= [int(i, base=10) for i in row]
+                Y.append(int(row[-1].rstrip()))#last element
+                row= [int(i) for i in row]
                 X.append(row[:-1]) #all elements except the last element
             f.close()
 
@@ -60,7 +60,7 @@ class linearReg:
         
         return X,Y,U,V,Vdash,Z,Zdash
 
-    def LinReg(X,Y,U,V,VDash,Z,ZDash):
+    def SGDLinear(X,Y,U,V,VDash,Z,ZDash):
         
         #ZDash = (np.matmul(np.array(U).transpose,VDash).tolist())
         # print(np.array(X))
