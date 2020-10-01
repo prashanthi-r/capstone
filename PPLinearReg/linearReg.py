@@ -42,7 +42,7 @@ class linearReg:
 		with open(filename_mask,'r') as f:
 			for line in f:
 				row=line.split()
-				row=[int(i, base=10) for i in row]
+				row=[np.uint64(i, base=10) for i in row]
 				mask.append(row)
 			f.close()
 
@@ -69,15 +69,15 @@ class linearReg:
 		X = func.floattoint64(np.array(X))
 		Y = func.floattoint64(np.array(Y))
 
-		E1 = np.subtract(np.array(X),np.array(U))
-		E2 = func.reconstruct(E1.tolist())
-		E = func.floattoint64(np.add(E1,np.array(E2)))
+		U = np.array(U)
+		V = np.array(V)
+		VDash = np.array(VDash)
+		Z = np.array(Z)
+		ZDash = np.array(ZDash)
 
-		U = func.floattoint64(np.array(U))
-		V = func.floattoint64(np.array(V))
-		VDash = func.floattoint64(np.array(VDash))
-		Z = func.floattoint64(np.array(Z))
-		ZDash = func.floattoint64(np.array(ZDash))
+		E1 = np.subtract(np.array(X),U)
+		E2 = func.reconstruct(E1.tolist())
+		E = np.uint64(np.add(E1,np.array(E2)))
 		
 		# randomly initialise weights vector
 		weights = func.floattoint64(np.array([[random.random() for i in range(conf.d)]]))
@@ -92,9 +92,9 @@ class linearReg:
 			Vdash_j = VDash[j]
 			Zdash_j = ZDash[j]
 
-			F1 = np.subtract(np.array(weights),np.array(V_j))
+			F1 = np.uint64(np.subtract(np.array(weights),np.array(V_j)))
 			F2 = func.reconstruct(F1.tolist())
-			F = func.floattoint64(np.add(np.array(F1),np.array(F2)))
+			F = np.uint64(np.add(np.array(F1),np.array(F2)))
 
 			YB_dash = func.matrixmul_reg(X_B,weights,E_B,F,V_j,Z_j)
 
