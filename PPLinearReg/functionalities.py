@@ -5,7 +5,7 @@ import socket
 import pickle 
 import random
 import numpy as np
-from mod import Mod
+#from mod import Mod
 
 class functionalities:
 

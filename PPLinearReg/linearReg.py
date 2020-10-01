@@ -85,10 +85,14 @@ class linearReg:
 		for j in range(conf.t): 
 			print(j)
 			X_B = X[j:j+conf.batchsize]
-			Y_B = Y[j:j+conf.batchsize]
+			Y_B=[Y[j:j+conf.batchsize]]
+			print('Y shape: ',np.array(Y_B).shape)
 			E_B = E[j:j+conf.batchsize]
-			V_j = V[:,j]
-			Z_j = Z[:,j]
+			V_j = np.array(V[:,j]).transpose()	# d*1
+			print(V_j)
+			print('Vj shape: ',V_j.shape)
+			Z_j = [Z[:,j]] 							#|B| * 1
+			print('Zj shape: ',np.array(Z_j).shape)
 			Vdash_j = VDash[:,j]
 			Zdash_j = ZDash[:,j]
 
@@ -97,19 +101,22 @@ class linearReg:
 			F = np.uint64(np.add(np.array(F1),np.array(F2)))
 
 			YB_dash = func.matrixmul_reg(X_B,weights,E_B,F,V_j,Z_j)
-
+			print('YB Dash shape: ',YB_dash.shape)
 			D_B = np.uint64(np.add(YB_dash,np.array(Y_B)))
 
 			Fdash_1 = np.uint64(np.subtract(D_B,Vdash_j))
 			Fdash_2 = func.reconstruct(Fdash_1)
-			FDash = np.uint64(np.add(np.array(Fdash_1),np.array(Fdash_2))).tolist()
+			FDash = np.uint64(np.add(np.array(Fdash_1),np.array(Fdash_2)))
 
-			X_B = np.array(X_B).transpose()
-			E_B = np.array(E_B).transpose()
-
-			Del_J = func.matrixmul_reg(X_B.tolist(),D_B,E_B.tolist(),FDash,Vdash_j,Zdash_j).tolist() # the partial differentiation of the loss function
+			X_BT = np.array(X_B).transpose() 
+			print('XBT shape : ',X_BT.shape)
+			E_BT = np.array(E_B).transpose()
+			print('EBT shape : ',E_BT.shape)
+			print('Fdash shape : ',FDash.shape)
+			print('DB shape : ',D_B.shape)
+			Del_J = func.matrixmul_reg(X_BT.tolist(),D_B,E_BT.tolist(),FDash,Vdash_j,Zdash_j).tolist() # the partial differentiation of the loss function output - dx1
 			
-			print(Del_J)
+			#print(Del_J)
 
 			for i in range(conf.d):
 				Del_J[i] = math.floor(Del_J[i])
