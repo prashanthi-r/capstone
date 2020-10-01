@@ -65,7 +65,6 @@ class linearReg:
 		#ZDash = (np.matmul(np.array(U).transpose,VDash).tolist())
 		# print(np.array(X))
 		# print(np.array(U))
-
 		X = func.floattoint64(np.array(X))
 		Y = func.floattoint64(np.array(Y))
 
@@ -80,27 +79,25 @@ class linearReg:
 		E = np.uint64(np.add(E1,np.array(E2)))
 		
 		# randomly initialise weights vector
-		weights = func.floattoint64(np.array([[random.random() for i in range(conf.d)]]))
-
+		weights = np.array(np.random.random(size = (conf.d,1)))
+		
 		for j in range(conf.t): 
-			print(j)
 			X_B = X[j:j+conf.batchsize]
-			Y_B=[Y[j:j+conf.batchsize]]
-			print('Y shape: ',np.array(Y_B).shape)
+			Y_B= np.array([Y[j:j+conf.batchsize]]).transpose()
 			E_B = E[j:j+conf.batchsize]
-			V_j = np.array(V[:,j]).transpose()	# d*1
-			print(V_j)
-			print('Vj shape: ',V_j.shape)
-			Z_j = [Z[:,j]] 							#|B| * 1
-			print('Zj shape: ',np.array(Z_j).shape)
-			Vdash_j = VDash[:,j]
-			Zdash_j = ZDash[:,j]
+			V_j = np.array([V[:,j]]).transpose()	# d*1
+			Z_j = np.array([Z[:,j]]).transpose()  	#|B| * 1
+			Vdash_j = np.array([VDash[:,j]]).transpose()
+			Zdash_j = np.array([ZDash[:,j]]).transpose()
 
-			F1 = np.uint64(np.subtract(np.array(weights),np.array(V_j)))
+			print('V_j shape',V_j.shape)
+			print('Weights shape: ',weights.shape)
+			F1 = np.uint64(np.subtract(np.array(weights),V_j))
 			F2 = func.reconstruct(F1.tolist())
-			F = np.uint64(np.add(np.array(F1),np.array(F2)))
+			F = np.uint64(np.add(np.array(F1),np.array(F2))) #d*1 as its weights-V_j (both of dim d*1)
+			print('F shape: ',F.shape)
 
-			YB_dash = func.matrixmul_reg(X_B,weights,E_B,F,V_j,Z_j)
+			YB_dash = func.matrixmul_reg(X_B,weights,E_B,F,V_j,Z_j) #|B|*1
 			print('YB Dash shape: ',YB_dash.shape)
 			D_B = np.uint64(np.add(YB_dash,np.array(Y_B)))
 
