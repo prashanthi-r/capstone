@@ -11,7 +11,7 @@ class functionalities:
 
 	def floattoint64(x):
 		x = np.uint64(conf.converttoint64*(x))
-		print(x.shape)
+		# print(x.shape)
 		return x.tolist()
 
 	def send_val(send_info):
@@ -104,12 +104,12 @@ class functionalities:
 		F = np.array(F) 
 		V = np.array(V) #mask of weights for this batch
 		Z = np.array(Z) #u[j]v[j] ->weight's mask for that batch
-		print(A.shape)
-		print(B.shape)
-		print(E.shape)
-		print(F.shape)
-		print(V.shape)
-		print(Z.shape)
+		# print(A.shape)
+		# print(B.shape)
+		# print(E.shape)
+		# print(F.shape)
+		# print(V.shape)
+		# print(Z.shape)
 
 		# F = np.subtract(B,V)
 		# recv_f = send_val(F.tolist())

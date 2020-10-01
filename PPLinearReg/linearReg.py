@@ -42,7 +42,7 @@ class linearReg:
 		with open(filename_mask,'r') as f:
 			for line in f:
 				row=line.split()
-				row=[np.uint64(i, base=10) for i in row]
+				row=[int(i, base=10) for i in row]
 				mask.append(row)
 			f.close()
 
@@ -87,10 +87,10 @@ class linearReg:
 			X_B = X[j:j+conf.batchsize]
 			Y_B = Y[j:j+conf.batchsize]
 			E_B = E[j:j+conf.batchsize]
-			V_j = V[j]
-			Z_j = Z[j]
-			Vdash_j = VDash[j]
-			Zdash_j = ZDash[j]
+			V_j = V[:,j]
+			Z_j = Z[:,j]
+			Vdash_j = VDash[:,j]
+			Zdash_j = ZDash[:,j]
 
 			F1 = np.uint64(np.subtract(np.array(weights),np.array(V_j)))
 			F2 = func.reconstruct(F1.tolist())
@@ -109,7 +109,9 @@ class linearReg:
 
 			Del_J = func.matrixmul_reg(X_B.tolist(),D_B,E_B.tolist(),FDash,Vdash_j,Zdash_j).tolist() # the partial differentiation of the loss function
 			
-			for i in range(d):
+			print(Del_J)
+
+			for i in range(conf.d):
 				Del_J[i] = math.floor(Del_J[i])
 
 			weights = np.uint64(np.subtract(np.array(weights),(alpha*(1/conf.batchsize)*np.array(Del_J)))).tolist()
