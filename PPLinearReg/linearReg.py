@@ -65,6 +65,7 @@ class linearReg:
 		#ZDash = (np.matmul(np.array(U).transpose,VDash).tolist())
 		# print(np.array(X))
 		# print(np.array(U))
+		alpha=0.01
 		X = func.floattoint64(np.array(X))
 		Y = func.floattoint64(np.array(Y))
 
@@ -77,49 +78,45 @@ class linearReg:
 		E1 = np.subtract(np.array(X),U)
 		E2 = func.reconstruct(E1.tolist())
 		E = np.uint64(np.add(E1,np.array(E2)))
-		
 		# randomly initialise weights vector
-		weights = np.array(np.random.random(size = (conf.d,1)))
+		weights = np.array(func.floattoint64(np.random.random(size = (conf.d,1))))
+		print('Weights: ',weights)
 		
 		for j in range(conf.t): 
-			X_B = X[j:j+conf.batchsize]
+			X_B = np.array(X[j:j+conf.batchsize])
 			Y_B= np.array([Y[j:j+conf.batchsize]]).transpose()
-			E_B = E[j:j+conf.batchsize]
+			E_B = np.array(E[j:j+conf.batchsize])
 			V_j = np.array([V[:,j]]).transpose()	# d*1
 			Z_j = np.array([Z[:,j]]).transpose()  	#|B| * 1
 			Vdash_j = np.array([VDash[:,j]]).transpose()
 			Zdash_j = np.array([ZDash[:,j]]).transpose()
 
-			print('V_j shape',V_j.shape)
-			print('Weights shape: ',weights.shape)
 			F1 = np.uint64(np.subtract(np.array(weights),V_j))
 			F2 = func.reconstruct(F1.tolist())
 			F = np.uint64(np.add(np.array(F1),np.array(F2))) #d*1 as its weights-V_j (both of dim d*1)
-			print('F shape: ',F.shape)
 
 			YB_dash = func.matrixmul_reg(X_B,weights,E_B,F,V_j,Z_j) #|B|*1
-			print('YB Dash shape: ',YB_dash.shape)
-			D_B = np.uint64(np.add(YB_dash,np.array(Y_B)))
+			#print('YB Dash shape: ',YB_dash.shape)
+			D_B = np.uint64(np.subtract(YB_dash,Y_B))
 
 			Fdash_1 = np.uint64(np.subtract(D_B,Vdash_j))
 			Fdash_2 = func.reconstruct(Fdash_1)
 			FDash = np.uint64(np.add(np.array(Fdash_1),np.array(Fdash_2)))
 
 			X_BT = np.array(X_B).transpose() 
-			print('XBT shape : ',X_BT.shape)
 			E_BT = np.array(E_B).transpose()
-			print('EBT shape : ',E_BT.shape)
-			print('Fdash shape : ',FDash.shape)
-			print('DB shape : ',D_B.shape)
+			# print('EBT shape : ',E_BT.shape)
+			# print('Fdash shape : ',FDash.shape)
+			# print('DB shape : ',D_B.shape)
 			Del_J = func.matrixmul_reg(X_BT.tolist(),D_B,E_BT.tolist(),FDash,Vdash_j,Zdash_j).tolist() # the partial differentiation of the loss function output - dx1
 			
 			#print(Del_J)
 
 			for i in range(conf.d):
-				Del_J[i] = math.floor(Del_J[i])
-
+				Del_J[i][0] = math.floor(Del_J[i][0])
 			weights = np.uint64(np.subtract(np.array(weights),(alpha*(1/conf.batchsize)*np.array(Del_J)))).tolist()
 
+		print('DelJ: ',Del_J)
 		weights2 = func.reconstruct(weights)
 
 		model = np.uint64(np.add(np.array(weights2),np.array(weights)))

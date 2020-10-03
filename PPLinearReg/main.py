@@ -7,7 +7,7 @@ from linearReg import linearReg as linearReg
 # main
 def main():
     conf.partyNum = int(sys.argv[1])
-    print(conf.partyNum)
+    #print(conf.partyNum)
     if conf.partyNum == 0:
         conf.PORT = 8002
         conf.advPORT = 8003
@@ -44,9 +44,9 @@ def main():
 
     X,Y,U,V,Vdash,Z,Zdash = linearReg.readData(filename_data,filename_mask)
     model = linearReg.SGDLinear(X,Y,U,V,Vdash,Z,Zdash)
+    print('Before truncate Model: ',model)
     model = func.truncate(model)
-    print(model)
-
+    print('After truncate Model: ',model)
 
 
 if __name__ == '__main__':

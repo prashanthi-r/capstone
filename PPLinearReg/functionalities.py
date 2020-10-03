@@ -98,12 +98,12 @@ class functionalities:
 
 
 	def matrixmul_reg(A,B,E,F,V,Z):
-		A = np.array(A) #data pt
-		B = np.array(B) #weights
-		E = np.array(E) # datapoint - mask
-		F = np.array(F) 
-		V = np.array(V) #mask of weights for this batch
-		Z = np.array(Z) #u[j]v[j] ->weight's mask for that batch
+		# A - data pt
+		# B - weights
+		# E = datapoint - data mask U
+		# V - mask of weights for this batch
+		# F = weights - weights mask V
+
 		# print(A.shape)
 		# print(B.shape)
 		# print(E.shape)
@@ -111,12 +111,13 @@ class functionalities:
 		# print(V.shape)
 		# print(Z.shape)
 
-		# F = np.subtract(B,V)
-		# recv_f = send_val(F.tolist())
-		# F = F + recv_f[0]
-		
-		Yhat1 = np.uint64(np.add(-1 * conf.partyNum * (np.uint64(np.multiply(E,F))),np.uint64(np.multiply(A,F))))
-		Yhat2 = np.uint64(np.add(np.uint64(np.multiply(E,B)),Z))
+	
+		mul1 = np.uint64(np.matmul(E,F))
+		mul2 = np.uint64(np.matmul(A,F))
+		mul3 = np.uint64(np.matmul(E,B))
+
+		Yhat1 = np.uint64(np.add(-1 * conf.partyNum * mul1,mul2))
+		Yhat2 = np.uint64(np.add(mul3,Z))
 		Yhat = np.uint64(np.add(Yhat1,Yhat2))
 
 		return Yhat
