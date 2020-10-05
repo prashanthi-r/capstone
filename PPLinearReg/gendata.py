@@ -86,7 +86,8 @@ def main():
     saveData(-1,u,v,v_dash,z,z_dash) #xy
     saveData(0,u_1,v_1,vdash_1,z_1,zdash_1) #xy_1
     saveData(1,u_2,v_2,vdash_2,z_2,zdash_2) #xy_2
-    saveData(0,x_1,x_2) 
+    saveData(0,x_1,y_1)
+    saveData(1,x_2,y_2) 
 
 if __name__ == '__main__':
     main()
