@@ -10,9 +10,9 @@ batchsize=1
 
 def split_shares(x,p,q):
     # print(x.shape)
-    x_1 = np.random.randint(low = (2**(conf.l-1)),size = (p,q))
+    x_1 = np.random.uniform(0, (2**l)-1, (p,q))
     # print(x_1.shape)
-    x_2 = np.uint64(np.subtract(x,x_1))
+    x_2 = np.subtract(x,x_1)
     # print(x_2.shape)
     return x_1,x_2
 
@@ -64,8 +64,9 @@ def saveData(serverNum,u,v,v_dash=np.array(None),z=np.array(None),z_dash=np.arra
         maskfile = 'mask' + str(serverNum) + '.txt'
 
     if(v_dash.any()==None or z.any()==None or z_dash.any()==None):
-        np.savetxt(datafile, u, delimiter=' ',fmt='%d') #x
-        np.savetxt(datafile, v, delimiter=' ',fmt='%d') #y
+        with open(datafile,'w+') as df:
+            np.savetxt(df, u, delimiter=' ',fmt='%d') #x
+            np.savetxt(df, v, delimiter='\n',fmt='%d') #y
     else:
         with open(maskfile,'w+') as f:
             np.savetxt(f,u,delimiter=' ',fmt='%d')
@@ -77,6 +78,8 @@ def saveData(serverNum,u,v,v_dash=np.array(None),z=np.array(None),z_dash=np.arra
 
 def main():
     X, Y = load_boston(return_X_y=True)
+    print(X[:5])
+    print(Y[:5])
     Y = Y.reshape(n,1)
     X_1,X_2 = split_shares(X,n,d)
     # print("X_1's shape: ",X_1.shape)

@@ -18,3 +18,5 @@ class Config:
 	t=-1
 	batchsize=1
 	alpha = 0.01 # learning rate
+	train = int(506*(80/100))
+	test = 506 - train

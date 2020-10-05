@@ -14,13 +14,14 @@ class functionalities:
 		return x.tolist()
 
 	def send_val(send_info):
+
 		if(conf.partyNum == 0):
 			ssock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 			ssock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 			ssock.bind((conf.IP, conf.PORT))
 			ssock.listen(1)
 			client, addr = ssock.accept()
-			recv_info = pickle.loads(client.recv(1024))
+			recv_info = pickle.loads(client.recv(send_info.__sizeof__()))
 			client.send(pickle.dumps(send_info))
 			client.close()
 			ssock.close()
@@ -28,7 +29,7 @@ class functionalities:
 			csock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 			csock.connect((conf.advIP,conf.advPORT))
 			csock.send(pickle.dumps(send_info))
-			recv_info = pickle.loads(csock.recv(1024))
+			recv_info = pickle.loads(csock.recv(send_info.__sizeof__()))
 			csock.close()
 		return recv_info
 

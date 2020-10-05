@@ -26,18 +26,28 @@ class linearReg:
 		V_dash=[] 
 		Z=[]
 		Z_dash=[]
-		with open(filename_data,'r') as f:
+		
+		i=0
+		with open(filename_data,'r+') as f:
 			for line in f:
 				row=line.split()
-				Y.append(float(row[-1].rstrip()))#last element
-				row= [float(i) for i in row]
-				X.append(row[:-1]) #all elements except the last element
+				i=i+1
+				if(i<=506):
+					row= [float(i) for i in row]
+					X.append(row)
+				else:
+					# print(row)
+					Y.append(float(row[0].rstrip()))
 			f.close()
-
+		# print("i: ",i)
 
 		conf.n = len(Y)
 		conf.d = len(X[0])
 		conf.t = conf.n
+		print("n: ",conf.n)
+		print("d: ",conf.d)
+		print("t: ",conf.t)
+
 
 		with open(filename_mask,'r') as f:
 			for line in f:
@@ -47,7 +57,7 @@ class linearReg:
 			f.close()
 
 
-		n = conf.n 
+		n = conf.n
 		d = conf.d
 		t = conf.t
 		b = conf.batchsize
