@@ -44,9 +44,12 @@ def main():
 
     X,Y,U,V,Vdash,Z,Zdash = linearReg.readData(filename_data,filename_mask)
     model = linearReg.SGDLinear(X,Y,U,V,Vdash,Z,Zdash)
-    print('Before truncate Model: ',model)
-    model = func.truncate(model)
-    print('After truncate Model: ',model)
+
+    for i in range(conf.d):
+        print(float(model[i]/conf.converttoint64),end=" ")
+    # print('Before truncate Model: ',model)
+    # model = func.truncate(model)
+    # print('After truncate Model: ',model)
 
 
 if __name__ == '__main__':

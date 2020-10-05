@@ -8,7 +8,7 @@ class Config:
 	advPORT = -1
 	l = 64
 	modl = 2**l
-	precision = 16
+	precision = 8
 	converttoint64 = (1<<precision)
 
 	# data specific

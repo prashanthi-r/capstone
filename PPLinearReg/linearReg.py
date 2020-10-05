@@ -110,13 +110,10 @@ class linearReg:
 			# print('DB shape : ',D_B.shape)
 			Del_J = func.matrixmul_reg(X_BT.tolist(),D_B,E_BT.tolist(),FDash,Vdash_j,Zdash_j).tolist() # the partial differentiation of the loss function output - dx1
 			
-			#print(Del_J)
-
 			for i in range(conf.d):
-				Del_J[i][0] = math.floor(Del_J[i][0])
+				Del_J[i][0] = func.truncate(Del_J[i][0])
 			weights = np.uint64(np.subtract(np.array(weights),(alpha*(1/conf.batchsize)*np.array(Del_J)))).tolist()
 
-		print('DelJ: ',Del_J)
 		weights2 = func.reconstruct(weights)
 
 		model = np.uint64(np.add(np.array(weights2),np.array(weights)))

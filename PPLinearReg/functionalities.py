@@ -11,7 +11,6 @@ class functionalities:
 
 	def floattoint64(x):
 		x = np.uint64(conf.converttoint64*(x))
-		# print(x.shape)
 		return x.tolist()
 
 	def send_val(send_info):
@@ -93,7 +92,7 @@ class functionalities:
 		return C
 
 	def truncate(x):
-		x = (x/conf.converttoint64)
+		x = np.uint64(x/conf.converttoint64)
 		return x
 
 
