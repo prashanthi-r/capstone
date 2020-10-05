@@ -85,7 +85,9 @@ class linearReg:
 		Z = np.array(Z)
 		ZDash = np.array(ZDash)
 
-		E1 = np.subtract(np.array(X),U)
+		E1 = np.uint64(np.subtract(np.array(X),U))
+		print('size of E1 ',str(E1.__sizeof__()))
+		print('size of E1 as list ',str((E1.tolist()).__sizeof__()))
 		E2 = func.reconstruct(E1.tolist())
 		E = np.uint64(np.add(E1,np.array(E2)))
 		# randomly initialise weights vector

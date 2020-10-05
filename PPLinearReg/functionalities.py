@@ -5,6 +5,7 @@ import socket
 import pickle 
 import random
 import numpy as np
+import zlib
 #from mod import Mod
 
 class functionalities:
@@ -14,22 +15,24 @@ class functionalities:
 		return x.tolist()
 
 	def send_val(send_info):
-
+		print(str(send_info.__sizeof__()))
 		if(conf.partyNum == 0):
 			ssock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 			ssock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 			ssock.bind((conf.IP, conf.PORT))
 			ssock.listen(1)
 			client, addr = ssock.accept()
-			recv_info = pickle.loads(client.recv(send_info.__sizeof__()))
-			client.send(pickle.dumps(send_info))
+			recv = client.recv(4096)
+			recv_info = pickle.loads(zlib.decompress(recv))
+			client.send(zlib.compress(pickle.dumps(send_info)))
 			client.close()
 			ssock.close()
 		else: 
 			csock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 			csock.connect((conf.advIP,conf.advPORT))
-			csock.send(pickle.dumps(send_info))
-			recv_info = pickle.loads(csock.recv(send_info.__sizeof__()))
+			csock.send(zlib.compress(pickle.dumps(send_info)))
+			recv= csock.recv(4096)
+			recv_info = pickle.loads(zlib.decompress(recv))
 			csock.close()
 		return recv_info
 
