@@ -7,6 +7,7 @@ class Config:
 	advIP = IP 
 	advPORT = -1
 	l = 64
+	lby2 = 32
 	modl = 2**l
 	precision = 8
 	converttoint64 = (1<<precision)
