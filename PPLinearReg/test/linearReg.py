@@ -32,10 +32,10 @@ class linearReg:
 			for line in f:
 				row=line.split()
 				i=i+1
-				if(i<=30):
+				if(i<=8):
 					row= [float(i) for i in row]
 					X.append(row)
-				if(i>506 and i<=506+30):
+				if(i>506 and i<=506+8):
 					Y.append(float(row[0].rstrip()))
 			f.close()
 		# print("i: ",i)
@@ -77,25 +77,21 @@ class linearReg:
 		alpha=0.01
 		X = func.floattoint64(np.array(X))
 		Y = func.floattoint64(np.array(Y))
-		print("x.shape ",np.array(X).shape)
-		print("y.shape ",np.array(Y).shape)
+
 		U = np.array(U)
 		V = np.array(V)
 		VDash = np.array(VDash)
 		Z = np.array(Z)
 		ZDash = np.array(ZDash)
 
-		E1 = np.uint64(np.subtract(np.array(X),U))
-		print("E1.shape ",E1.shape)
-		# print('size of E1 ',str(E1.__sizeof__()))
-		# print('size of E1 as list ',str((E1.tolist()).__sizeof__()))
+		E1 = np.subtract(np.array(X),U)
 		E2 = func.reconstruct(E1.tolist())
 		E = np.uint64(np.add(E1,np.array(E2)))
 		# randomly initialise weights vector
 		weights = np.array((np.random.random(size = (conf.d,1))))
 		print('Weights: ',weights)
 		weights = func.floattoint64(weights)
-		
+
 		for j in range(conf.t): 
 			X_B = np.array(X[j:j+conf.batchsize])
 			Y_B= np.array([Y[j:j+conf.batchsize]]).transpose()
@@ -122,7 +118,7 @@ class linearReg:
 			# print('EBT shape : ',E_BT.shape)
 			# print('Fdash shape : ',FDash.shape)
 			# print('DB shape : ',D_B.shape)
-			Del_J = func.matrixmul_reg(X_BT.tolist(),D_B,E_BT.tolist(),FDash,Vdash_j,Zdash_j).tolist() # the partial differentiation of the loss function output - dx1
+			Del_J = func.matrixmul_reg(X_BT,D_B,E_BT,FDash,Vdash_j,Zdash_j).tolist() # the partial differentiation of the loss function output - dx1
 			
 			for i in range(conf.d):
 				Del_J[i][0] = func.truncate(Del_J[i][0])

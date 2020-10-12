@@ -5,7 +5,6 @@ import socket
 import pickle 
 import random
 import numpy as np
-import zlib
 #from mod import Mod
 
 class functionalities:
@@ -16,46 +15,40 @@ class functionalities:
 
 	def send_val(send_info):
 
-		# zlib_compress = zlib.compressobj(9, zlib.DEFLATED, zlib.MAX_WBITS)
-		print(int(send_info.__sizeof__()))
-		
 		if(conf.partyNum == 0):
 			ssock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 			ssock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 			ssock.bind((conf.IP, conf.PORT))
 			ssock.listen(1)
-			client, addr = ssock.accept()
-			# recv = client.recv(4096)
-			# try:
-			recv_info=[]
 			while True:
-			    recv = client.recv(4096)
-			    if not recv: break
-			    recv_info.append(recv)
+				try:
+					client, addr = ssock.accept()
+					print("Received connection from client")
+					break
+				except:
+					continue
+			# client, addr = ssock.accept()
+			print("Size of send val: ",sys.getsizeof(send_info))
+			recv_info = client.recv(4096)
 			recv_info = pickle.loads(recv_info)
-
 			client.send(pickle.dumps(send_info))
 			client.close()
 			ssock.close()
 		else: 
 			csock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-			csock.connect((conf.advIP,conf.advPORT))
-			try:
-				csock.send(pickle.dumps(send_info))
-			except:
-				print("Couldn't send info")		
-
-			recv_info=[]
 			while True:
-			    recv = csock.recv(4096)
-			    if not recv: break
-			    recv_info.append(recv)
-			recv_info = pickle.loads(recv_info)
-
+				try:
+					csock.connect((conf.advIP,conf.advPORT))
+					print("Connected to server")
+					break
+				except: 
+					continue
+			# csock.connect((conf.advIP,conf.advPORT))
+			print("Size of send val: ",sys.getsizeof(send_info))
+			csock.send(pickle.dumps(send_info))
+			recv_info = pickle.loads(csock.recv(4096))
 			csock.close()
-
-		print("Returning....")
-		return list(recv_info)
+		return recv_info
 
 	def addshares(a, b, mask):
 		sendlist = []
