@@ -3,16 +3,16 @@ import numpy as np
 from Config import Config as conf
 from sklearn.datasets import load_boston
 
-n = 30
+n = 8
 d = 13
 t = n
 batchsize=1
 
 def split_shares(x,p,q):
     # print(x.shape)
-    x_1 = np.random.uniform(0, (2**conf.l)-1, (p,q))
+    x_1 = np.uint64(np.random.uniform(0, (2**conf.l)-1, (p,q)))
     # print(x_1.shape)
-    x_2 = np.subtract(x,x_1)
+    x_2 = np.uint64(np.subtract(x,x_1))
     # print(x_2.shape)
     return x_1,x_2
 
@@ -38,16 +38,13 @@ def generatedata():
 
     # xy = np.random.randint(low = 100, size = (n, d+1)) 
     u = np.random.randint(low = 2**(conf.l-1),size = (n,d))
-    print("Size of U: ",len(u))
+    
     v = np.random.randint(low = 2**(conf.l-1),size = (d,t))
-    print("Size of V: ",len(v))
     v_dash = np.random.randint(low = 2**(conf.l-1),size = (batchsize,t))
-    print("Size of v_dash: ",len(v_dash))
-    z = np.zeros((1,t),dtype=int)
-    print("Size of Z: ",len(z))
-    z_dash= np.zeros((d,t),dtype=int)
-    print("Size of Z_dash: ",len(z_dash))
 
+    z = np.zeros((1,t),dtype=int)
+    z_dash= np.zeros((d,t),dtype=int)
+   
     for i in range(len(u)):
         z[:,i]= np.uint64((np.matmul(u[i],v[:,i]))) #multiplying a row of u with a column of v
         u_row_tranpose = np.transpose(np.matrix(u[i]))

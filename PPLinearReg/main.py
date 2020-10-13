@@ -9,11 +9,11 @@ def main():
     conf.partyNum = int(sys.argv[1])
     #print(conf.partyNum)
     if conf.partyNum == 0:
-        conf.PORT = 8002
-        conf.advPORT = 8003
+        conf.PORT = 8004
+        conf.advPORT = 8005
     else: 
-        conf.PORT = 8003
-        conf.advPORT = 8002
+        conf.PORT = 8005
+        conf.advPORT = 8004
     
     ############# add float shares ################
     # a = float(sys.argv[2])
@@ -45,8 +45,11 @@ def main():
     X,Y,U,V,Vdash,Z,Zdash = linearReg.readData(filename_data,filename_mask)
     model = linearReg.SGDLinear(X,Y,U,V,Vdash,Z,Zdash)
 
+    print(model)
+    print("\n[",end=" ")
     for i in range(conf.d):
-        print(float(model[i]/conf.converttoint64),end=" ")
+        print(float(model[i]>>conf.precision),end=",")
+    print("]")
     # print('Before truncate Model: ',model)
     # model = func.truncate(model)
     # print('After truncate Model: ',model)

@@ -9,8 +9,9 @@ class Config:
 	l = 64
 	lby2 = 32
 	modl = 2**l
-	precision = 8
+	precision = 16
 	converttoint64 = (1<<precision)
+	trunc_parameter = (1>>precision)
 
 	# data specific
 	n=-1
