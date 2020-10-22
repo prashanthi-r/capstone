@@ -12,6 +12,7 @@ class Config:
 	precision = 16
 	converttoint64 = (1<<precision)
 	trunc_parameter = (1>>precision)
+	epochs = 100
 
 	# data specific
 	n=-1
@@ -19,5 +20,6 @@ class Config:
 	t=-1
 	batchsize=1
 	alpha = 0.01 # learning rate
+	alpha_inv = 1/alpha
 	train = int(506*(80/100))
 	test = 506 - train

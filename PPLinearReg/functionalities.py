@@ -11,8 +11,13 @@ import math
 class functionalities:
 
 	def floattoint64(x):
+		# print(conf.converttoint64*(x))
 		x = np.uint64(conf.converttoint64*(x))
-		return x.tolist()
+		return x
+
+	def int64tofloat(x):
+		x = (float(x)/conf.converttoint64)
+		return x
 
 	def send_val(send_info):
 
@@ -110,14 +115,11 @@ class functionalities:
 		
 		return C
 
-	def truncate(x):
+	def truncate(x,scale):
 		if(conf.partyNum==0):
-			x = math.floor((x)>>conf.precision)
+			x = (math.floor(x)/scale)
 		else: 
-			x = 2**conf.l- x
-			x = math.floor((x)>>conf.precision)
-			x = 2**conf.l- x
-		
+			x = np.uint64(-1*np.uint64(np.int64(-1*x)/scale))
 		return x
 
 
