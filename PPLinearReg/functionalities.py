@@ -29,7 +29,7 @@ class functionalities:
 			while True:
 				try:
 					client, addr = ssock.accept()
-					# print("Received connection from client")
+					# print("Received connection ")
 					break
 				except:
 					continue
@@ -45,7 +45,7 @@ class functionalities:
 			while True:
 				try:
 					csock.connect((conf.advIP,conf.advPORT))
-					# print("Connected to server")
+					# print("Connected")
 					break
 				except: 
 					continue
@@ -116,12 +116,19 @@ class functionalities:
 		return C
 
 	def truncate(x,scale):
+		# if(conf.partyNum==0):
+		# 	x = (math.floor(x)/scale)
+		# else: 
+		# 	x = 2**conf.l - x
+		# 	x = (math.floor(x)/scale)
+		# 	x = 2**conf.l - x
+		# 	# x = np.uint64(-1*np.uint64(np.int64(-1*x)/scale))
+		# return x
 		if(conf.partyNum==0):
-			x = (math.floor(x)/scale)
+			x = -1*x
 		else: 
-			x = 2**conf.l - x
-			x = (math.floor(x)/scale)
-			x = 2**conf.l - x
+			x = -1*x
+			x/=scale
 			# x = np.uint64(-1*np.uint64(np.int64(-1*x)/scale))
 		return x
 

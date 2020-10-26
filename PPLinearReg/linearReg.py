@@ -124,7 +124,7 @@ class linearReg:
 
 				YB_dash = func.matrixmul_reg(X_B,weights,E_B,F,V_j,Z_j) #|B|*1
 				# print('YB Dash shape: ',YB_dash.shape)					
-				YB_dash[0][0] = func.truncate(YB_dash[0][0],conf.converttoint64)
+				#YB_dash[0][0] = func.truncate(YB_dash[0][0],conf.converttoint64)
 
 				D_B = np.uint64(np.subtract(YB_dash,Y_B))
 				# print("Y_B: ",Y_B)
@@ -136,7 +136,7 @@ class linearReg:
 				# print(yb_dash)
 				dif = (yb_dash - yb)
 				# print(dif)
-				loss = loss + (dif*dif)
+				loss = loss+(dif*dif)
 				
 				Fdash_1 = np.uint64(np.subtract(D_B,Vdash_j))
 				Fdash_2 = func.reconstruct(Fdash_1)
@@ -162,8 +162,8 @@ class linearReg:
 				# # print(": ")
 				# print(delta)
 
-				for i in range(conf.d):
-					Del_J[i][0] = func.truncate(Del_J[i][0],conf.converttoint64)
+				# for i in range(conf.d):
+				# 	Del_J[i][0] = func.truncate(Del_J[i][0],conf.converttoint64)
 			
 				# DelJ2 = func.reconstruct(Del_J)
 
@@ -175,7 +175,9 @@ class linearReg:
 				# print(gradient.shape)
 				# print("Trunction of Del")
 				for i in range(conf.d):
+					Del_J[i][0] = func.truncate(Del_J[i][0],conf.converttoint64)
 					Del_J[i][0] = func.truncate(Del_J[i][0],func.floattoint64(conf.alpha_inv*(conf.batchsize)))
+					
 
 				weights = np.uint64((np.subtract(np.array(weights),Del_J)))
 			

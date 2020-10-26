@@ -1,7 +1,7 @@
 import random
 import numpy as np
 from Config import Config as conf
-from sklearn.datasets import load_boston
+#from sklearn.datasets import load_boston
 
 n = 6
 d = 2
@@ -90,7 +90,7 @@ def main():
     # X = np.uint64(conf.converttoint64*np.array(X[:8])).tolist()
     # Y = np.uint64(conf.converttoint64*np.array(Y[:8]))
     X = [[4,1],[2,8],[1,0],[3,2],[1,4],[6,7]]
-    X = np.uint64(np.array(X).tolist())
+    X = np.uint64(np.array(X))
     Y = [2,14,1,1,7,8]
     Y = np.uint64(np.array(Y))
     Y = Y.reshape(len(Y),1)
