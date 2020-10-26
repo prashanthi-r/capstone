@@ -3,8 +3,8 @@ import numpy as np
 from Config import Config as conf
 from sklearn.datasets import load_boston
 
-n = 8
-d = 13
+n = 6
+d = 2
 t = n
 batchsize=1
 
@@ -86,9 +86,13 @@ def check_shares(x1,x2,X):
 
 
 def main():
-    X, Y = load_boston(return_X_y=True)
-    X = np.uint64(conf.converttoint64*np.array(X[:8])).tolist()
-    Y = np.uint64(conf.converttoint64*np.array(Y[:8]))
+    # X, Y = load_boston(return_X_y=True)
+    # X = np.uint64(conf.converttoint64*np.array(X[:8])).tolist()
+    # Y = np.uint64(conf.converttoint64*np.array(Y[:8]))
+    X = [[4,1],[2,8],[1,0],[3,2],[1,4],[6,7]]
+    X = np.uint64(np.array(X).tolist())
+    Y = [2,14,1,1,7,8]
+    Y = np.uint64(np.array(Y))
     Y = Y.reshape(len(Y),1)
     
     X_1,X_2 = split_shares(X,len(Y),d)

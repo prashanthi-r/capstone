@@ -32,7 +32,7 @@ class linearReg:
 			for line in f:
 				row=line.split()
 				i=i+1
-				if(i<=8):
+				if(i<=6):
 					row= [np.uint64(i) for i in row]
 					X.append(row)
 				else:
@@ -103,7 +103,7 @@ class linearReg:
 
 		# print(Y)
 		for e in range(conf.epochs):
-			
+			# print("e: ", e)
 			loss = 0.0
 
 			for j in range(conf.t): 
@@ -180,11 +180,11 @@ class linearReg:
 				weights = np.uint64((np.subtract(np.array(weights),Del_J)))
 			
 			if e == 0 or e==conf.epochs-1: 
-				print("Loss: ", float(loss/8))
+				print("Loss: ", float(loss))
 
 		
-		for i in range(conf.d):
-			weights[i][0] = func.int64tofloat(weights[i][0])
+		# for i in range(conf.d):
+			# weights[i][0] = func.int64tofloat(weights[i][0])
 		
 		print("\nWeights: ",weights)
 		

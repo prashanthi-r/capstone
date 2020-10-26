@@ -12,7 +12,7 @@ class Config:
 	precision = 16
 	converttoint64 = (1<<precision)
 	trunc_parameter = (1>>precision)
-	epochs = 100
+	epochs = 2
 
 	# data specific
 	n=-1
