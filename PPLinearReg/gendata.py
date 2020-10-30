@@ -4,7 +4,7 @@ from Config import Config as conf
 #from sklearn.datasets import load_boston
 
 n = 6
-d = 2
+d = 2 
 t = n
 batchsize=1
 
