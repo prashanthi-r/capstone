@@ -91,7 +91,7 @@ def main():
     # Y = np.uint64(conf.converttoint64*np.array(Y[:8]))
     X = [[4,1],[2,8],[1,0],[3,2],[1,4],[6,7]]
     X = np.uint64(np.array(X))
-    Y = [2,14,1,1,7,8]
+    Y = [2,-14,1,-1,-7,-8]
     Y = np.uint64(np.array(Y))
     Y = Y.reshape(len(Y),1)
     

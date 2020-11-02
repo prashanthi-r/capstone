@@ -3,8 +3,8 @@ import socket
 class Config:
 	PORT = -1
 	partyNum = -1
-	#IP = socket.gethostbyname(socket.gethostname())
-	IP='192.168.0.152'
+	IP = socket.gethostbyname(socket.gethostname())
+	# IP='192.168.0.152'
 	#IP=(socket.gethostbyname_ex(socket.gethostname())[-1])[1]
 	advIP = IP 
 	advPORT = -1
@@ -22,6 +22,6 @@ class Config:
 	t=-1
 	batchsize=1
 	alpha = 0.01 # learning rate
-	alpha_inv = 1/alpha
+	alpha_inv = (1/alpha)
 	train = int(506*(80/100))
 	test = 506 - train

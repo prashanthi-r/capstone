@@ -127,10 +127,11 @@ class functionalities:
 		if(conf.partyNum==0):
 			x = -1*x
 		else: 
-			x = -1*x
-			x/=scale
-			# x = np.uint64(-1*np.uint64(np.int64(-1*x)/scale))
-		return x
+			# x = np.uint64(-1*x)
+			# x/=scale
+			# x = -1*x
+			x = np.uint64(-1*np.uint64(np.int64(-1*x)/scale))
+		return np.uint64(x)
 
 
 	def matrixmul_reg(A,B,E,F,V,Z):
