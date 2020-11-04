@@ -12,11 +12,11 @@ class functionalities:
 
 	def floattoint64(x):
 		# print(conf.converttoint64*(x))
-		x = np.uint64(conf.converttoint64*(x))
+		x = np.array(conf.converttoint64*(x), dtype = np.uint64)
 		return x
 
 	def int64tofloat(x):
-		x = (float(x)/conf.converttoint64)
+		x = (float(np.int64(x))/conf.converttoint64)
 		return x
 
 	def send_val(send_info):
@@ -133,6 +133,20 @@ class functionalities:
 			x = np.uint64(-1*np.uint64(np.int64(-1*x)/scale))
 		return np.uint64(x)
 
+	def addvectors(A,B):
+		m,n = A.shape
+		# print(A)
+		# print(B)
+		C = np.array([[0]*n]*m)
+		# print(C)
+		for i in range(m):
+			for j in range(n):
+				print(i,j)
+				C[i][j] = (A[i][j] + B[i][j])%(2**conf.l)
+				print(C[i][j])
+		# print(C)
+		# print(np.array(C))
+		return C
 
 	def matrixmul_reg(A,B,E,F,V,Z):
 		# A - data pt
@@ -141,7 +155,7 @@ class functionalities:
 		# V - mask of weights for this batch
 		# F = weights - weights mask V
 
-		# print(A.shape)
+		# print(type(A))
 		# print(B.shape)
 		# print(E.shape)
 		# print(F.shape)
@@ -149,15 +163,15 @@ class functionalities:
 		# print(Z.shape)
 
 	
-		mul1 = np.uint64(np.matmul(E,F))
-		mul2 = np.uint64(np.matmul(A,F))
-		mul3 = np.uint64(np.matmul(E,B))
+		mul1 = (np.matmul(np.array(E, dtype = np.uint64),np.array(F, dtype = np.uint64)))
+		mul2 = (np.matmul(np.array(A, dtype = np.uint64),np.array(F, dtype = np.uint64)))
+		mul3 = (np.matmul(np.array(E, dtype = np.uint64),np.array(B, dtype = np.uint64)))
 
 		# print("mul3: ", mul3)
 		# print("Z: ", Z)
 
-		Yhat1 = np.uint64(np.add((-1) * conf.partyNum * mul1,mul2))
-		Yhat2 = np.uint64(np.add(mul3,Z))
-		Yhat = np.uint64(np.add(Yhat1,Yhat2))
+		Yhat1 = np.array(np.add(np.array((-1) * conf.partyNum * mul1, dtype = np.uint64),mul2))
+		Yhat2 = np.add(mul3,Z)
+		Yhat = np.add(Yhat1,Yhat2)
 
 		return Yhat
