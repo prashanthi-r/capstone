@@ -1,4 +1,5 @@
 import socket
+import numpy as np
 
 class Config:
 	PORT = -1
@@ -11,7 +12,7 @@ class Config:
 	l = 64
 	lby2 = 32
 	modl = 2**l
-	precision = 16
+	precision = 13
 	converttoint64 = (1<<precision)
 	trunc_parameter = (1>>precision)
 	epochs = 1
@@ -25,3 +26,12 @@ class Config:
 	alpha_inv = (1/alpha)
 	train = int(506*(80/100))
 	test = 506 - train
+
+	# def floattoint64(x):
+	# 	# print(conf.converttoint64*(x))
+	# 	x = ((1<<16)*(x))
+	# 	return np.uint64(x)
+
+	# def int64tofloat(x):
+	# 	x = (float(np.int64(x))/(1<<16))
+	# 	return x

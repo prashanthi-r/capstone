@@ -11,7 +11,7 @@ batchsize=1
 
 def split_shares(x,p,q):
     # print(x)
-    x = func.floattoint64(x)
+    # x = func.floattoint64(x)
     x_1 = np.uint64(np.random.uniform(0, (2**conf.l), (p,q)))
     # print("x shape ",x.shape)
     x_2 = np.array(np.subtract(x,x_1), dtype = np.uint64)
@@ -93,8 +93,10 @@ def main():
     # Y = np.uint64(conf.converttoint64*np.array(Y[:8]))
     X = [[4,1],[2,8],[1,0],[3,2],[1,4],[6,7]]
     X = np.array(X, dtype = np.uint64)
+    X = func.floattoint64(X)
     Y = [2,-14,1,-1,-7,-8]
     Y = np.array(Y, dtype = np.uint64)
+    Y = func.floattoint64(Y)
     Y = Y.reshape(len(Y),1)
     
     X_1,X_2 = split_shares(X,len(Y),d)

@@ -9,18 +9,23 @@ import math
 #from mod import Mod
 
 class functionalities:
-
 	def floattoint64(x):
 		# print(conf.converttoint64*(x))
 		x = np.array(conf.converttoint64*(x), dtype = np.uint64)
 		return x
 
 	def int64tofloat(x):
-		x = (float(np.int64(x))/conf.converttoint64)
-		return x
+		y=0
+		if(x > (2**32)-1):
+			x = (2**64) - x
+			y = np.uint32(x)
+			y = y*(-1)
+		else:
+			y = np.uint32(x)
+
+		return float(y)/(1<<16)
 
 	def send_val(send_info):
-
 		if(conf.partyNum == 0):
 			ssock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 			ssock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -125,11 +130,11 @@ class functionalities:
 		# 	# x = np.uint64(-1*np.uint64(np.int64(-1*x)/scale))
 		# return x
 		if(conf.partyNum==0):
-			x = -1*x
+			x = np.uint64(x)/scale
 		else: 
-			# x = np.uint64(-1*x)
-			# x/=scale
-			# x = -1*x
+			# x = 2**conf.l - x
+			# x = math.floor((x)/scale)
+			# x = 2**conf.l - x
 			x = np.uint64(-1*np.uint64(np.int64(-1*x)/scale))
 		return np.uint64(x)
 
@@ -166,12 +171,11 @@ class functionalities:
 		mul1 = (np.matmul(np.array(E, dtype = np.uint64),np.array(F, dtype = np.uint64)))
 		mul2 = (np.matmul(np.array(A, dtype = np.uint64),np.array(F, dtype = np.uint64)))
 		mul3 = (np.matmul(np.array(E, dtype = np.uint64),np.array(B, dtype = np.uint64)))
-
 		# print("mul3: ", mul3)
 		# print("Z: ", Z)
 
-		Yhat1 = np.array(np.add(np.array((-1) * conf.partyNum * mul1, dtype = np.uint64),mul2))
-		Yhat2 = np.add(mul3,Z)
-		Yhat = np.add(Yhat1,Yhat2)
+		Yhat1 = np.array(np.add(np.array(functionalities.floattoint64(-1 * conf.partyNum) * mul1, dtype = np.uint64),mul2))
+		Yhat2 = np.array(np.add(mul3,Z),dtype=np.uint64)
+		Yhat = np.array(np.add(Yhat1,Yhat2),dtype=np.uint64)
 
 		return Yhat
