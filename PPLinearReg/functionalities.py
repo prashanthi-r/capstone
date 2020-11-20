@@ -6,7 +6,6 @@ import pickle
 import random
 import numpy as np
 import math
-#from mod import Mod
 
 class functionalities:
 	def floattoint64(x):

@@ -82,11 +82,11 @@ class linearReg:
 		X = (np.array(X, dtype = np.uint64))
 		Y = (np.array(Y, dtype = np.uint64))
 
-		print("Y: ", Y)
-		Y2 = func.reconstruct(Y.tolist())
-		Y2 = np.array(Y2,dtype = np.uint64)
-		Y_f = np.add(Y, np.array(Y2))
-		print("Reconstructed Y: ")
+		# print("Y: ", Y)
+		# Y2 = func.reconstruct(Y.tolist())
+		# Y2 = np.array(Y2,dtype = np.uint64)
+		# Y_f = np.add(Y, np.array(Y2))
+		# print("Reconstructed Y: ")
 
 		# for i in Y_f:
 			# print(func.int64tofloat(i))
@@ -107,8 +107,8 @@ class linearReg:
 		weights2 = func.reconstruct(weights)
 
 		wts = weights+weights2
-		print("Initial weights: ")
-		print(wts)
+		# print("Initial weights: ")
+		# print(wts)
 
 
 		weights = np.array(func.floattoint64(weights), dtype = np.uint64)
@@ -161,16 +161,19 @@ class linearReg:
 				# print("yb2 shape: ", np.array(yb2, dtype = np.uint64).shape)
 				y = (np.add(Y_B,np.array(yb2, dtype = np.uint64)))
 				y = func.int64tofloat(y[0][0])
-				print("After int to float, y:", y)
+				# print("After int to float, y:", y)
+				
+				#################################################### Computing loss ###################################################################
 				
 				# ybdash = (np.uint64(YB_dash))
 				# print(ybdash)
 				ybdash2 = func.reconstruct(YB_dash.tolist())
 				# print("ybdash2: ",ybdash2)
 				y_hat = (np.add(YB_dash,np.array(ybdash2, dtype = np.uint64)))
-				print("y_hat: ", np.array(y_hat, dtype = np.uint64))
+				# print("y_hat: ", np.array(y_hat, dtype = np.uint64))
 				# y_hat = y_hat[0][0]
 				# y_hat = (np.add(YB_dash,np.array(ybdash2, dtype = np.uint64)))
+				
 				y_hat = (func.int64tofloat(y_hat[0][0]))
 				print("y_hat: ", y_hat)
 				
@@ -178,6 +181,9 @@ class linearReg:
 				# print(dif)
 				loss = loss+(dif*dif)
 				print("Loss: ", loss)
+
+				#######################################################################################################################################
+
 				Fdash_1 = (np.subtract(D_B,Vdash_j))
 				Fdash_2 = func.reconstruct(Fdash_1)
 				FDash = (np.add(Fdash_1,np.array(Fdash_2, dtype = np.uint64)))
@@ -214,12 +220,14 @@ class linearReg:
 				# print("Alpha: ",alpha)
 				# print(gradient.shape)
 				# print("Trunction of Del")
+
 				for i in range(conf.d):
 					Del_J[i][0] = func.truncate(Del_J[i][0],conf.converttoint64)
 					Del_J[i][0] = func.truncate(Del_J[i][0],func.floattoint64(conf.alpha_inv*(conf.batchsize)))
 					
 
 				weights = ((np.subtract(np.array(weights, dtype = np.uint64),Del_J)))
+				
 				# for i in range(conf.d):
 				# 	print(func.int64tofloat(weights[i][0]))
 			
@@ -230,10 +238,11 @@ class linearReg:
 		# for i in range(conf.d):
 			# weights[i][0] = func.int64tofloat(weights[i][0])
 		
+		################# Reconstructed final weights #############################################
 		
 		weights2 = func.reconstruct(weights.tolist())
-
 		model = (np.add(np.array(weights2, dtype = np.uint64),np.array(weights, dtype = np.uint64)))
+
+		###########################################################################################
 		
-		# print("\nWeights: ",model)
 		return model

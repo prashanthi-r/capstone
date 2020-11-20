@@ -22,21 +22,6 @@ def split_shares(x,p,q):
     # print(x_2.shape)
     return np.array(x_1, dtype = np.uint64),x_2
 
-# def split_share(u,v,v_dash,z,z_dash): #xy
-#     # xy_1 = np.random.randint(low = 100, size = (n, d+1))
-#     # xy_2 = np.subtract(xy,xy_1)
-#     u_1 = np.random.randint(low = (2**conf.l),size = (n,d))
-#     u_2 = np.uint64(np.subtract(u,u_1))
-#     v_1 = np.random.randint(low = (2**conf.l),size = (d,t))
-#     v_2 = np.uint64(np.subtract(v,v_1))
-#     vdash_1 = np.random.randint(low = (2**conf.l),size = (batchsize,t))
-#     vdash_2 = np.uint64(np.subtract(v_dash,vdash_1))
-#     z_1 = np.random.randint(low = (2**conf.l),size = (1,t))
-#     z_2 = np.uint64(np.subtract(z,z_1))
-#     zdash_1 = np.random.randint(low = (2**conf.l),size = (d,t))
-#     zdash_2 = np.uint64(np.subtract(z_dash,zdash_1))
-#     return u_1,u_2,v_1,v_2,vdash_1,vdash_2,z_1,z_2,zdash_1,zdash_2 #xy_1,xy_2,
-
 def generatedata():
     
     z=[]
