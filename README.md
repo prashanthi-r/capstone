@@ -1,1 +1,3 @@
-# Capstone Project: As part of our requirement for an advanced major
+# Capstone Project: Privacy Preserving Machine Learning
+
+1. SecureML: Linear Regression
