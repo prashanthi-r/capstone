@@ -22,7 +22,8 @@ class functionalities:
 		else:
 			y = np.uint32(x)
 
-		return float(y)/(1<<conf.precision)
+		return float(y)
+		# return float(y)/(1<<conf.precision)
 
 	def send_val(send_info):
 		if(conf.partyNum == 0):
@@ -161,21 +162,31 @@ class functionalities:
 
 		# print(A.shape)
 		# print(B.shape)
-		print(E.shape)
-		print(F.shape)
+		print("E: ",(E))
+		print("F: ",F)
+		# print(F.s)
 		# print(V.shape)
 		# print(Z.shape)
 
-		mul1 = (np.matmul(E,F))
+		mul1 = np.array(np.matmul(E,F))
+		print("mul1: ", mul1)
+		# mul1 = np.array([functionalities.truncate(mul1[0],conf.converttoint64)])
+
 		mul2 = (np.matmul(A,F))
+		# mul2 = np.array([functionalities.truncate(mul2[0],conf.converttoint64)])
+
 		mul3 = (np.matmul(E,B))
+		# mul3 = np.array([functionalities.truncate(mul3[0],conf.converttoint64)])
 		print(mul1.shape)
 		mul0 = np.multiply(functionalities.floattoint64(-1 * conf.partyNum), mul1)
+		# mul0= np.array([functionalities.truncate(mul0[0],conf.converttoint64)])
+		
 		print("mul0: ", mul0)
 		print("mul1: ", mul1)
 		print("mul2: ", mul2)
 		print("mul3: ", mul3)
 		# print("Z: ", Z)
+		print("Z shape ", Z.shape)
 
 		Yhat1 = np.add(mul0,mul2)
 		Yhat2 = np.add(mul3,Z)
