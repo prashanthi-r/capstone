@@ -104,15 +104,15 @@ class linearReg:
 		weights = np.array((np.random.rand(conf.d)))
 		weights = weights.reshape(conf.d,1)
 		# print('Weights: ',weights)
-		weights2 = func.reconstruct(weights)
+		# weights2 = func.reconstruct(weights)
 
-		wts = weights+weights2
+		# wts = weights+weights2
 		# print("Initial weights: ")
 		# print(wts)
 
 
 		weights = np.array(func.floattoint64(weights), dtype = np.uint64)
-		print(weights)
+		# print(weights)
 
 		# print(Y)
 		for e in range(conf.epochs):
@@ -126,9 +126,9 @@ class linearReg:
 				# print("X_B: ", X_B)
 				xb2 = func.reconstruct(X_B.tolist())
 				xb2 = np.array(xb2,dtype = np.uint64)
-				print("xb2: ",xb2)
+				# print("xb2: ",xb2)
 				xb = np.add(X_B, np.array(xb2))
-				print("xb: ", xb)
+				# print("xb: ", xb)
 				# print("x after reconstruction:", func.int64tofloat(xb[0][0]))
 				for i in xb[0]:
 					print(func.int64tofloat(i)) 
@@ -175,12 +175,12 @@ class linearReg:
 				# y_hat = (np.add(YB_dash,np.array(ybdash2, dtype = np.uint64)))
 				
 				y_hat = (func.int64tofloat(y_hat[0][0]))
-				print("y_hat: ", y_hat)
+				# print("y_hat: ", y_hat)
 				
 				dif = (y_hat - y)
 				# print(dif)
 				loss = loss+(dif*dif)
-				print("Loss: ", loss)
+				# print("Loss: ", loss)
 
 				#######################################################################################################################################
 
@@ -231,8 +231,8 @@ class linearReg:
 				# for i in range(conf.d):
 				# 	print(func.int64tofloat(weights[i][0]))
 			
-			if e == 0 or e==conf.epochs-1: 
-				print("Loss: ", float(loss))
+			# if e == 0 or e==conf.epochs-1: 
+				# print("Loss: ", float(loss))
 
 		
 		# for i in range(conf.d):

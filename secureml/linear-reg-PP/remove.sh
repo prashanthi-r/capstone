@@ -1,3 +1,4 @@
+#!/bin/sh
 rm -rf data.txt
 rm -rf data0.txt
 rm -rf data1.txt

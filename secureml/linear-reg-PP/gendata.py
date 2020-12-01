@@ -22,19 +22,83 @@ def split_shares(x,p,q):
     # print(x_2.shape)
     return np.array(x_1, dtype = np.uint64),x_2
 
+def check_uvz():
+    # d = d+1
+    mask0 = []
+    mask1 = []
+    with open("mask0.txt",'r') as f1:
+        for line in f1:
+            row=line.split()
+            row=[int(i, base=10) for i in row]
+            mask0.append(row)
+        f1.close()
+
+    U0 = np.array(mask0[:n], dtype = np.uint64)
+    V0 = np.array(mask0[n:n+d+1], dtype = np.uint64)
+    Vdash0 = np.array(mask0[n+d+1: n+d+2], dtype = np.uint64)
+    Z0 = np.array(mask0[n+d+2:n+d+3], dtype = np.uint64)
+    Zdash0 = np.array(mask0[n+d+3:], dtype = np.uint64)
+
+    with open("mask1.txt",'r') as f2:
+        for line in f2:
+            row=line.split()
+            row=[int(i, base=10) for i in row]
+            mask1.append(row)
+        f2.close()
+
+    U1 = np.array(mask1[:n], dtype = np.uint64)
+    V1 = np.array(mask1[n:n+d+1], dtype = np.uint64)
+    Vdash1 = np.array(mask1[n+d+1: n+d+2], dtype = np.uint64)
+    Z1 = np.array(mask1[n+d+2:n+d+3], dtype = np.uint64)
+    Zdash1 = np.array(mask1[n+d+3:], dtype = np.uint64)
+
+    # add shares
+    U = np.add(U0,U1)
+    V = np.add(V0,V1)
+    z = np.add(Z0,Z1)
+    print(U.shape)
+    print(V.shape)
+    print(z.shape)
+
+    Z = np.zeros((1,t),dtype=np.uint64)
+    for i in range(len(U)):
+        Z[:,i]= np.array((np.matmul(U[i],V[:,i])), dtype = np.uint64) #multiplying a row of u with a column of v
+    
+    cmp = (z == Z)
+    if(cmp.all):
+        print("yes, the shares of z add up!")
+
+    print(Z)
+
+
+    # mask = []
+    # with open("mask.txt",'r') as f2:
+    #     for line in f2:
+    #         row=line.split()
+    #         row=[int(i, base=10) for i in row]
+    #         mask.append(row)
+    #     f2.close()  
+
+    # U = mask[:n]
+    # V = mask[n:n+d]
+    # Vdash = mask[n+d: n+d+1]
+    # Z = mask[n+d+1:n+d+2]
+    # Zdash=mask[n+d+2:]
+
+
 def generatedata():
     
     z=[]
     z_dash=[]
 
     # xy = np.random.randint(low = 100, size = (n, d+1)) 
-    u = np.array(np.random.randint(low = 2**(conf.l-1),size = (n,d+1)), dtype = np.uint64)
+    u = np.array(np.random.randint(low = 0, high = 2**(conf.l-1),size = (n,d+1)), dtype = np.uint64)
     
-    v = np.array(np.random.randint(low = 2**(conf.l-1),size = (d+1,t)), dtype = np.uint64)
+    v = np.array(np.random.randint(low = 0, high = 2**(conf.l-1),size = (d+1,t)), dtype = np.uint64)
     v_dash = np.array(np.random.randint(low = 2**(conf.l-1),size = (batchsize,t)), dtype = np.uint64)
 
-    z = np.zeros((1,t),dtype=int)
-    z_dash= np.zeros((d+1,t),dtype=int)
+    z = np.zeros((1,t),dtype=np.uint64)
+    z_dash= np.zeros((d+1,t),dtype=np.uint64)
    
     for i in range(len(u)):
         z[:,i]= np.array((np.matmul(u[i],v[:,i])), dtype = np.uint64) #multiplying a row of u with a column of v
@@ -54,10 +118,11 @@ def saveData(serverNum,u,v,v_dash=np.array(None),z=np.array(None),z_dash=np.arra
         datafile = 'data' + str(serverNum) + '.txt' 
         maskfile = 'mask' + str(serverNum) + '.txt'
 
-    if(v_dash.any()==None or z.any()==None or z_dash.any()==None):
+    if(v_dash.any()==None and z.any()==None and z_dash.any()==None):
         with open(datafile,'w+') as df:
             np.savetxt(df, u, delimiter=' ',fmt='%d') #x
             np.savetxt(df, v, delimiter='\n',fmt='%d') #y
+
     else:
         with open(maskfile,'w+') as f:
             np.savetxt(f,u,delimiter=' ',fmt='%d')
@@ -104,9 +169,10 @@ def main():
     saveData(-1,u,v,v_dash,z,z_dash) #xy
     saveData(0,u_1,v_1,vdash_1,z_1,zdash_1) #xy_1
     saveData(1,u_2,v_2,vdash_2,z_2,zdash_2) #xy_2
-    # saveData(-1,X,Y) 
+    saveData(-1,X,Y) 
     saveData(0,X_1,Y_1)
-    saveData(1,X_2,Y_2) 
+    saveData(1,X_2,Y_2)
+    check_uvz() 
 
 if __name__ == '__main__':
     main()

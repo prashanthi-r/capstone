@@ -22,7 +22,7 @@ class functionalities:
 		else:
 			y = np.uint32(x)
 
-		return float(y)/(1<<16)
+		return float(y)/(1<<conf.precision)
 
 	def send_val(send_info):
 		if(conf.partyNum == 0):
@@ -159,22 +159,28 @@ class functionalities:
 		# V - mask of weights for this batch
 		# F = weights - weights mask V
 
-		# print(type(A))
+		# print(A.shape)
 		# print(B.shape)
-		# print(E.shape)
-		# print(F.shape)
+		print(E.shape)
+		print(F.shape)
 		# print(V.shape)
 		# print(Z.shape)
 
-	
-		mul1 = (np.matmul(np.array(E, dtype = np.uint64),np.array(F, dtype = np.uint64)))
-		mul2 = (np.matmul(np.array(A, dtype = np.uint64),np.array(F, dtype = np.uint64)))
-		mul3 = (np.matmul(np.array(E, dtype = np.uint64),np.array(B, dtype = np.uint64)))
-		# print("mul3: ", mul3)
+		mul1 = (np.matmul(E,F))
+		mul2 = (np.matmul(A,F))
+		mul3 = (np.matmul(E,B))
+		print(mul1.shape)
+		mul0 = np.multiply(functionalities.floattoint64(-1 * conf.partyNum), mul1)
+		print("mul0: ", mul0)
+		print("mul1: ", mul1)
+		print("mul2: ", mul2)
+		print("mul3: ", mul3)
 		# print("Z: ", Z)
 
-		Yhat1 = np.array(np.add(np.array(functionalities.floattoint64(-1 * conf.partyNum) * mul1, dtype = np.uint64),mul2))
-		Yhat2 = np.array(np.add(mul3,Z),dtype=np.uint64)
-		Yhat = np.array(np.add(Yhat1,Yhat2),dtype=np.uint64)
+		Yhat1 = np.add(mul0,mul2)
+		Yhat2 = np.add(mul3,Z)
+		Yhat = np.add(Yhat1,Yhat2)
+		print("Yhat1: ", Yhat1)
+		print("Yhat2: ", Yhat2)
 
 		return Yhat
