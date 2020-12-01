@@ -2,7 +2,8 @@ from Config import Config as conf
 import sys
 from functionalities import functionalities as func
 from linearReg import linearReg as linearReg
-
+from offline import offline as off
+import numpy as np
 # command line argument - partyNum, integer input a, integer input b, mask value
 # main
 def main():
@@ -43,9 +44,10 @@ def main():
 		filename_mask='mask1.txt'
 
 	X,Y,U,V,Vdash,Z,Zdash = linearReg.readData(filename_data,filename_mask)
+	
 	Z=off.lhe(np.array(U),np.array(V))
 	Zdash=off.lhe(np.array(U),np.array(Vdash))
-	model = linearReg.SGDLinear(X,Y,U,V,Vdash,Z,Zdash)
+	# model = linearReg.SGDLinear(X,Y,U,V,Vdash,Z,Zdash)
 
 	# print(model)
 	print("\n[",end=" ")

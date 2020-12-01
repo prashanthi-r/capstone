@@ -37,7 +37,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="/Users/nandiniagrawal/Desktop/Capstone/capstone/PPLinearReg/virtual-env"
+VIRTUAL_ENV="/Users/nandiniagrawal/Desktop/Capstone/capstone/secureml/linear-reg-PP/virtual-env"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

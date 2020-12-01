@@ -1,4 +1,4 @@
-#!/Users/nandiniagrawal/Desktop/Capstone/capstone/PPLinearReg/virtual-env/bin/python3
+#!/Users/nandiniagrawal/Desktop/Capstone/capstone/secureml/linear-reg-PP/virtual-env/bin/python3
 # EASY-INSTALL-ENTRY-SCRIPT: 'phe==1.4.0','console_scripts','pheutil'
 __requires__ = 'phe==1.4.0'
 import re

@@ -71,6 +71,7 @@ class linearReg:
 		Z = mask[n+d+1:n+d+2]
 		Zdash=mask[n+d+2:]
 		
+		
 		return X,Y,U,V,Vdash,Z,Zdash
 
 	def SGDLinear(X,Y,U,V,VDash,Z,ZDash):

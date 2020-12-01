@@ -29,7 +29,7 @@ end
 # unset irrelevant variables
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV "/Users/nandiniagrawal/Desktop/Capstone/capstone/PPLinearReg/virtual-env"
+set -gx VIRTUAL_ENV "/Users/nandiniagrawal/Desktop/Capstone/capstone/secureml/linear-reg-PP/virtual-env"
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/bin" $PATH
