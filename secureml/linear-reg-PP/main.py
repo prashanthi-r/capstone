@@ -51,44 +51,51 @@ def main():
 	
 	U = np.random.rand(conf.n, conf.d)
 	V = np.random.rand(conf.d,conf.t)
-	print("U: ",U)
-
 	Vdash = np.random.rand(conf.batchsize,conf.t)
-	print("Vdash: ",Vdash)
+
+	print("My U: ",U)
+	print("My Vdash: ",Vdash)
+
+	########Reconstruct to check#########
 	U2 = np.array(func.reconstruct(U.tolist()))
 	U2 = U2.reshape(conf.n,conf.d)
 	u = np.add(U,U2)
 
-	# V2 = np.array(func.reconstruct(V.tolist()))
-	# V2 = V2.reshape(conf.d,conf.t)
-	# v = np.add(V,V2)	
+	V2 = np.array(func.reconstruct(V.tolist()))
+	V2 = V2.reshape(conf.d,conf.t)
+	v = np.add(V,V2)	
 
 	Vdash2 = np.array(func.reconstruct(Vdash.tolist()))
 	Vdash2 = Vdash2.reshape(conf.batchsize,conf.t)
-	vdash = np.add(Vdash,Vdash2)	
+	vdash = np.add(Vdash,Vdash2)
+
 	# print('U: ',u)
 	# print('V:', v)
 	# print('Vdash: ',vdash)
 
-	# z = np.zeros((1,conf.t))
+	#######Actual values of Z and Zdash########
+	z = np.zeros((1,conf.t))
 	zdash = np.zeros((conf.d,conf.t))
-	# for i in range(len(u)):
-	# 	z[:,i]= np.array((np.matmul(u[i],v[:,i])))
-	# print("mult z: ", z)
+	for i in range(len(u)):
+		z[:,i]= np.array((np.matmul(u[i],v[:,i])))
+	print("Actual mult z: ", z)
 	
 	for i in range(len(u)):
 		u_row_tranpose = np.transpose(np.matrix(u[i]))
-		print(u_row_tranpose)
 		zdash[:,i]=np.array(np.matmul(u_row_tranpose,vdash[:,i]))
 	
-	print("mult zdash: ", zdash)
+	print("Actual mult zdash: ", zdash)
 
-	# flag = 0 # generate Z
-	# Z=off.lhe(np.array(U),np.array(V),flag)
+	######LHE generation of Z and Zdash shares#####
+	flag = 0 # generate Z
+	Z=off.lhe(np.array(U),np.array(V),flag)
+	# print('my Z: ',Z)
+
 	flag = 1 # generate Zdash
 	Zdash=off.lhe(np.array(U),np.array(Vdash),flag)
 
-	# print('my Z: ',Z)
+	
+	#######RECONSTRUCT Z AND ZDASH TO VERIFY########
 	# Z2 = np.array(func.reconstruct(Z.tolist()))
 	# Z2 = Z2.reshape(1,conf.t)
 	# Z_f = np.add(Z,Z2)
@@ -102,6 +109,7 @@ def main():
 	print("reconstructed Zdash: ", Zdash_f)
 	# print(Zdash)
 
+	###### PREPARING MASKS FOR LINEAR REG #######
 	U = func.floattoint64(U)
 	V = func.floattoint64(V)
 	Vdash = func.floattoint64(Vdash)
