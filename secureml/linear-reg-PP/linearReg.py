@@ -232,8 +232,8 @@ class linearReg:
 				# for i in range(conf.d):
 				# 	print(func.int64tofloat(weights[i][0]))
 			
-			# if e == 0 or e==conf.epochs-1: 
-				# print("Loss: ", float(loss))
+			if e == 0 or e==conf.epochs-1: 
+				print("Loss: ", float(loss))
 
 		
 		# for i in range(conf.d):

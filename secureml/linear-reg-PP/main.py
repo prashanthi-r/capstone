@@ -51,32 +51,40 @@ def main():
 	
 	U = np.random.rand(conf.n, conf.d)
 	V = np.random.rand(conf.d,conf.t)
-	U2 = np.array(func.reconstruct(U.tolist()))
-	U2 = U2.reshape(conf.n,conf.d)
-	u = np.add(U,U2)
+	Vdash = np.random.rand(conf.batchsize,conf.t)
+	# U2 = np.array(func.reconstruct(U.tolist()))
+	# U2 = U2.reshape(conf.n,conf.d)
+	# u = np.add(U,U2)
 
-	V2 = np.array(func.reconstruct(V.tolist()))
-	V2 = V2.reshape(conf.d,conf.t)
-	v = np.add(V,V2)	
-	print('U: ',u)
-	print('V:', v)
-	z = np.zeros((1,conf.t))
-	for i in range(len(u)):
-		z[:,i]= np.array((np.matmul(u[i],v[:,i])))
-	print("mult z: ", z)
-	Z=off.lhe(np.array(U),np.array(V))
+	# V2 = np.array(func.reconstruct(V.tolist()))
+	# V2 = V2.reshape(conf.d,conf.t)
+	# v = np.add(V,V2)	
+	# print('U: ',u)
+	# print('V:', v)
+	# z = np.zeros((1,conf.t))
+	# for i in range(len(u)):
+	# 	z[:,i]= np.array((np.matmul(u[i],v[:,i])))
+	# print("mult z: ", z)
 
-	# print('my Z: ',Z)
-	Z2 = np.array(func.reconstruct(Z.tolist()))
-	Z2 = Z2.reshape(1,conf.t)
-	Z_f = np.add(Z,Z2)
+	flag = 0 # generate Z
+	Z=off.lhe(np.array(U),np.array(V),flag)
+	flag = 1 # generate Zdash
+	Zdash=off.lhe(np.array(U),np.array(Vdash),flag)
 
-	print("reconstructed Z: ", Z_f)
-	
-	
-	# Zdash=off.lhe(np.array(U),np.array(Vdash))
+	# # print('my Z: ',Z)
+	# Z2 = np.array(func.reconstruct(Z.tolist()))
+	# Z2 = Z2.reshape(1,conf.t)
+	# Z_f = np.add(Z,Z2)
+
+	# print("reconstructed Z: ", Z_f)
 	# print(Zdash)
-	# model = linearReg.SGDLinear(X,Y,U,V,Vdash,Z,Zdash)
+
+	U = func.floattoint64(U)
+	V = func.floattoint64(V)
+	Vdash = func.floattoint64(Vdash)
+	Z = func.floattoint64(Z)
+	Zdash = func.floattoint64(Zdash)
+	model = linearReg.SGDLinear(X,Y,U,V,Vdash,Z,Zdash)
 
 	# print(model)
 	# print("\n[",end=" ")
