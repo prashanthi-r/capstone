@@ -4,8 +4,8 @@ import numpy as np
 class Config:
 	PORT = -1
 	partyNum = -1
-	# IP = socket.gethostbyname(socket.gethostname())
-	IP = '192.168.0.152' 
+	IP = socket.gethostbyname(socket.gethostname())
+	# IP = '192.168.0.152' 
 	advIP = IP 
 	advPORT = -1
 	l = 64
@@ -14,7 +14,7 @@ class Config:
 	precision = 13
 	converttoint64 = (1<<precision)
 	trunc_parameter = (1>>precision)
-	epochs = 1
+	epochs = 5
 	
 	# data specific
 

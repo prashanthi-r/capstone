@@ -51,10 +51,27 @@ def main():
 	
 	U = np.random.rand(conf.n, conf.d)
 	V = np.random.rand(conf.d,conf.t)
-	print('U: ',U)
-	print('V:', V)
+	U2 = np.array(func.reconstruct(U.tolist()))
+	U2 = U2.reshape(conf.n,conf.d)
+	u = np.add(U,U2)
+
+	V2 = np.array(func.reconstruct(V.tolist()))
+	V2 = V2.reshape(conf.d,conf.t)
+	v = np.add(V,V2)	
+	print('U: ',u)
+	print('V:', v)
+	z = np.zeros((1,conf.t))
+	for i in range(len(u)):
+		z[:,i]= np.array((np.matmul(u[i],v[:,i])))
+	print("mult z: ", z)
 	Z=off.lhe(np.array(U),np.array(V))
-	print('Z: ',Z)
+
+	# print('my Z: ',Z)
+	Z2 = np.array(func.reconstruct(Z.tolist()))
+	Z2 = Z2.reshape(1,conf.t)
+	Z_f = np.add(Z,Z2)
+
+	print("reconstructed Z: ", Z_f)
 	
 	
 	# Zdash=off.lhe(np.array(U),np.array(Vdash))

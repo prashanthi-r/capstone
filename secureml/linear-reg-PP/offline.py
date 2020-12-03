@@ -57,6 +57,7 @@ class offline:
             C.append(term) #A0B0 + A0B1 + A1BO for S0, A1B1+A0B1+A1B0 for S1
         
         C = np.array(C)
+        C = C.reshape(1,conf.t)
         print('Final term: ',C)
         return C
 
