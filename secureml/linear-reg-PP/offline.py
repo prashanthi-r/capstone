@@ -24,37 +24,45 @@ class offline:
 		pubkey,privkey = paillier.generate_paillier_keypair()
 		pubkeyOther = func.reconstruct([pubkey])
 		pubkeyOther=pubkeyOther[0]
-		print('others pubkey ',pubkeyOther)
+		#print('others pubkey ',pubkeyOther)
 		for j in range(conf.t): 
 			print('In loop')
-			if(flag == 0):
-				A = np.array(U[j:j+conf.batchsize])
-			else:
-				A = np.array(U[:,j])
-				A= A.reshape(conf.d,1)
+			A = np.array(U[j:j+conf.batchsize])
+			if(flag != 0):
+				A = A.transpose()
+				A = A.reshape(conf.d,1)
 
 			B = np.array(V[:,j])
 			B= B.reshape(V.shape[0],1)
 			c_0 = np.matmul(A,B) #A0B0 for S0 and A1B1 for S1 // np.uint64()
 			encrypted_B = offline.encrypt_vector(pubkey, B) #S1 encrypts B1 for A0B1 and S0 encrypts B0 A1B0
 			other_B = np.array(func.reconstruct(encrypted_B.tolist()))
-			other_B = other_B.reshape(V.shape[0],1) #B is d*1 
-			c_1=0
-			for i in range(V.shape[0]): 
-				#will only work for batchsize = 1, change for any batchsize once this works
-				c_1 = c_1 + other_B[i][0]*A[0][i] #not sure about mod64, not mentioned in paper
-
-			c_1 = np.array(c_1)
-			c_1= c_1.reshape(conf.batchsize,1)
-			random_num = np.array(np.random.random())
+			other_B = other_B.reshape(V.shape[0],1) #B is d*1 or 1*1 for Vdash
+			if (flag == 0):
+				c_1=0
+				for i in range(V.shape[0]): 
+					#will only work for batchsize = 1, change for any batchsize once this works
+					c_1 = c_1 + other_B[i][0]*A[0][i] #not sure about mod64, not mentioned in paper
+				c_1 = np.array(c_1)
+				c_1= c_1.reshape(conf.batchsize,1)		
+			else :
+				c_1 = []
+				for i in range(A.shape[0]):
+					#will only work for batchsize = 1
+					temp = other_B[0][0] * A[i][0]
+					c_1.append([temp])
+				c_1 = np.array(c_1)
+				c_1 = c_1.reshape(A.shape[0],1) 
+			
+			random_num = np.array(np.random.random(size=(c_1.shape[0],1)))
 			# random_num = func.floattoint64(random_num)
-			random_num= random_num.reshape(conf.batchsize,1)
+			#random_num= random_num.reshape(conf.batchsize,1)
 			encrypted_random = offline.encrypt_vector(pubkeyOther,random_num)
-			print(encrypted_random)
+			encrypted_random= encrypted_random.reshape(c_1.shape[0],1)
 			#c_1 = np.matmul(c_1,encrypted_random)
 			c_1 = np.add(c_1,encrypted_random)
 			recv = np.array(func.reconstruct(c_1.tolist()))
-			recv=recv.reshape(conf.batchsize,1)
+			recv=recv.reshape(c_1.shape[0],1)
 			recv=offline.decrypt_vector(privkey,recv)
 			random_num = np.multiply(-1,random_num) #since -r mod 2^l
 			term = np.add(c_0,recv)
@@ -62,6 +70,6 @@ class offline:
 			C.append(term) #A0B0 + A0B1 + A1BO for S0, A1B1+A0B1+A1B0 for S1
 		
 		C = np.array(C)
-		C = C.reshape(1,conf.t)
+		C = C.reshape(c_1.shape[0],conf.t)
 		print('Final term: ',C)
 		return C
