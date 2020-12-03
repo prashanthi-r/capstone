@@ -6,6 +6,7 @@ import pickle
 import random
 import numpy as np
 import math
+import asyncio
 
 class functionalities:
 	def floattoint64(x):
@@ -15,26 +16,27 @@ class functionalities:
 
 	def int64tofloat(x):
 		y=0
-		if(x > (2**32)-1):
+		if(x > (2**63)-1):
 			x = (2**64) - x
 			y = np.uint32(x)
 			y = y*(-1)
 		else:
 			y = np.uint32(x)
 
-		return float(y)
-		# return float(y)/(1<<conf.precision)
+		# return float(y)
+		return float(y)/(1<<conf.precision)
 
 	def send_val(send_info):
 		if(conf.partyNum == 0):
 			ssock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 			ssock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 			ssock.bind((conf.IP, conf.PORT))
-			ssock.listen(1)
+			ssock.listen()
 			while True:
 				try:
+					print('Waiting for connection at : ',conf.IP,conf.PORT)
 					client, addr = ssock.accept()
-					# print("Received connection ")
+					print('Received connection ')
 					break
 				except:
 					continue
@@ -55,9 +57,11 @@ class functionalities:
 				except: 
 					continue
 			# csock.connect((conf.advIP,conf.advPORT))
+			# csock.setblocking(True)		
 			# print("Size of send val: ",sys.getsizeof(send_info))
 			csock.send(pickle.dumps(send_info))
 			recv_info = pickle.loads(csock.recv(4096))
+			# csock.shutdown(socket.SHUT_RDWR)
 			csock.close()
 		return recv_info
 

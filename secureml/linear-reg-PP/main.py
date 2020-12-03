@@ -2,7 +2,7 @@ from Config import Config as conf
 import sys
 from functionalities import functionalities as func
 from linearReg import linearReg as linearReg
-# from offline import offline as off
+from offline import offline as off
 import numpy as np
 from testmatmul import testmatmul as test
 
@@ -18,7 +18,7 @@ def main():
 		conf.PORT = 8005
 		conf.advPORT = 8004
 
-	test.test()
+	# test.test()
 	
 	############# add float shares ################
 	# a = float(sys.argv[2])
@@ -40,17 +40,25 @@ def main():
 	# filename_data = str(sys.argv[2])
 	# filename_mask = str(sys.argv[3])
 
-	# if conf.partyNum==0:
-	# 	filename_data='data0.txt'
-	# 	filename_mask='mask0.txt'
-	# else:
-	# 	filename_data='data1.txt'
-	# 	filename_mask='mask1.txt'
+	if conf.partyNum==0:
+		filename_data='data0.txt'
+		filename_mask='mask0.txt'
+	else:
+		filename_data='data1.txt'
+		filename_mask='mask1.txt'
 
-	# X,Y,U,V,Vdash,Z,Zdash = linearReg.readData(filename_data,filename_mask)
+	X,Y,U,V,Vdash,Z,Zdash = linearReg.readData(filename_data,filename_mask) #technically gen data should be just splitting data
 	
-	# Z=off.lhe(np.array(U),np.array(V))
+	U = np.random.rand(conf.n, conf.d)
+	V = np.random.rand(conf.d,conf.t)
+	print('U: ',U)
+	print('V:', V)
+	Z=off.lhe(np.array(U),np.array(V))
+	print('Z: ',Z)
+	
+	
 	# Zdash=off.lhe(np.array(U),np.array(Vdash))
+	# print(Zdash)
 	# model = linearReg.SGDLinear(X,Y,U,V,Vdash,Z,Zdash)
 
 	# print(model)
