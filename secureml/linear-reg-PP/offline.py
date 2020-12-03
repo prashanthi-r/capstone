@@ -29,7 +29,7 @@ class offline:
 			# print('In loop')
 			A = np.array(U[j:j+conf.batchsize])
 			if(flag != 0):
-				A = A.transpose()
+				#A = A.transpose() - doesnt work, not needed
 				A = A.reshape(conf.d,1)
 				# print("A.shape: ", A.shape)
 
@@ -38,6 +38,7 @@ class offline:
 			c_0 = np.matmul(A,B) #A0B0 for S0 and A1B1 for S1 // np.uint64()
 			# print("C_0.shape: ", c_0.shape)
 			encrypted_B = offline.encrypt_vector(pubkey, B) #S1 encrypts B1 for A0B1 and S0 encrypts B0 A1B0
+			
 			other_B = np.array(func.reconstruct(encrypted_B.tolist()))
 			other_B = other_B.reshape(V.shape[0],1) #B is d*1 or 1*1 for Vdash
 			if (flag == 0):
@@ -74,13 +75,16 @@ class offline:
 			random_num = np.multiply(-1,random_num) #since -r mod 2^l
 			term = np.add(c_0,recv)
 			term = np.add(term,random_num)
-			# term = term.reshape(term.shape[0],)
-			C.append(term) #A0B0 + A0B1 + A1BO for S0, A1B1+A0B1+A1B0 for S1
+			term = term.reshape(term.shape[0],)
+			C.append(term.tolist()) #A0B0 + A0B1 + A1BO for S0, A1B1+A0B1+A1B0 for S1
 			# print("C: ",np.array(C).shape)
 		
 		C = np.array(C)
 		# print("C: ",C)
-		C = C.reshape(c_1.shape[0],conf.t)
+		if flag==0:
+			C = C.reshape(c_1.shape[0],conf.t)
+		else:
+			C = np.transpose(C)
 		# print("C shape: ",C.shape)
 		# print('Final term: ',C)
 		return C

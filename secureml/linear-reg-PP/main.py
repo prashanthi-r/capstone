@@ -53,8 +53,8 @@ def main():
 	V = np.random.rand(conf.d,conf.t)
 	Vdash = np.random.rand(conf.batchsize,conf.t)
 
-	print("My U: ",U)
-	print("My Vdash: ",Vdash)
+	# print("My U: ",U)
+	# print("My Vdash: ",Vdash)
 
 	########Reconstruct to check#########
 	U2 = np.array(func.reconstruct(U.tolist()))
@@ -69,9 +69,9 @@ def main():
 	Vdash2 = Vdash2.reshape(conf.batchsize,conf.t)
 	vdash = np.add(Vdash,Vdash2)
 
-	# print('U: ',u)
-	# print('V:', v)
-	# print('Vdash: ',vdash)
+	print('U: ',u)
+	print('V:', v)
+	print('Vdash: ',vdash)
 
 	#######Actual values of Z and Zdash########
 	z = np.zeros((1,conf.t))
@@ -96,11 +96,11 @@ def main():
 
 	
 	#######RECONSTRUCT Z AND ZDASH TO VERIFY########
-	# Z2 = np.array(func.reconstruct(Z.tolist()))
-	# Z2 = Z2.reshape(1,conf.t)
-	# Z_f = np.add(Z,Z2)
+	Z2 = np.array(func.reconstruct(Z.tolist()))
+	Z2 = Z2.reshape(1,conf.t)
+	Z_f = np.add(Z,Z2)
 
-	# print("reconstructed Z: ", Z_f)
+	print("reconstructed Z: ", Z_f)
 
 	Zdash2 = np.array(func.reconstruct(Zdash.tolist()))
 	Zdash2 = Zdash2.reshape(conf.d,conf.t)
