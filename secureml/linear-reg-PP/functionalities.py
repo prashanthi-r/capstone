@@ -34,9 +34,9 @@ class functionalities:
 			ssock.listen()
 			while True:
 				try:
-					print('Waiting for connection at : ',conf.IP,conf.PORT)
+					# print('Waiting for connection at : ',conf.IP,conf.PORT)
 					client, addr = ssock.accept()
-					print('Received connection ')
+					# print('Received connection ')
 					break
 				except:
 					continue
