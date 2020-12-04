@@ -69,22 +69,22 @@ def main():
 	Vdash2 = Vdash2.reshape(conf.batchsize,conf.t)
 	vdash = np.add(Vdash,Vdash2)
 
-	print('U: ',u)
-	print('V:', v)
-	print('Vdash: ',vdash)
+	# print('U: ',u)
+	# print('V:', v)
+	# print('Vdash: ',vdash)
 
 	#######Actual values of Z and Zdash########
 	z = np.zeros((1,conf.t))
 	zdash = np.zeros((conf.d,conf.t))
 	for i in range(len(u)):
 		z[:,i]= np.array((np.matmul(u[i],v[:,i])))
-	print("Actual mult z: ", z)
+	# print("Actual mult z: ", z)
 	
 	for i in range(len(u)):
 		u_row_tranpose = np.transpose(np.matrix(u[i]))
 		zdash[:,i]=np.array(np.matmul(u_row_tranpose,vdash[:,i]))
 	
-	print("Actual mult zdash: ", zdash)
+	# print("Actual mult zdash: ", zdash)
 
 	######LHE generation of Z and Zdash shares#####
 	flag = 0 # generate Z
@@ -100,13 +100,13 @@ def main():
 	Z2 = Z2.reshape(1,conf.t)
 	Z_f = np.add(Z,Z2)
 
-	print("reconstructed Z: ", Z_f)
+	# print("reconstructed Z: ", Z_f)
 
 	Zdash2 = np.array(func.reconstruct(Zdash.tolist()))
 	Zdash2 = Zdash2.reshape(conf.d,conf.t)
 	Zdash_f = np.add(Zdash,Zdash2)
 
-	print("reconstructed Zdash: ", Zdash_f)
+	# print("reconstructed Zdash: ", Zdash_f)
 	# print(Zdash)
 
 	###### PREPARING MASKS FOR LINEAR REG #######
@@ -115,7 +115,7 @@ def main():
 	Vdash = func.floattoint64(Vdash)
 	Z = func.floattoint64(Z)
 	Zdash = func.floattoint64(Zdash)
-	# model = linearReg.SGDLinear(X,Y,U,V,Vdash,Z,Zdash)
+	model = linearReg.SGDLinear(X,Y,U,V,Vdash,Z,Zdash)
 
 	# print(model)
 	# print("\n[",end=" ")

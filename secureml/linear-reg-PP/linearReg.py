@@ -131,8 +131,8 @@ class linearReg:
 				xb = np.add(X_B, np.array(xb2))
 				# print("xb: ", xb)
 				# print("x after reconstruction:", func.int64tofloat(xb[0][0]))
-				for i in xb[0]:
-					print(func.int64tofloat(i)) 
+				# for i in xb[0]:
+				# 	print(func.int64tofloat(i)) 
 
 				E_B = np.array(E[j:j+conf.batchsize], dtype = np.uint64)
 				V_j = np.array([V[:,j]], dtype = np.uint64).transpose()	# d*1

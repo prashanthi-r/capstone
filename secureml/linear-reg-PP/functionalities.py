@@ -16,12 +16,12 @@ class functionalities:
 
 	def int64tofloat(x):
 		y=0
-		if(x > (2**63)-1):
-			x = (2**64) - x
-			y = np.uint32(x)
+		if(x > (2**(conf.l-1))-1):
+			x = (2**conf.l) - x
+			y = np.uint64(x)
 			y = y*(-1)
 		else:
-			y = np.uint32(x)
+			y = np.uint64(x)
 
 		# return float(y)
 		return float(y)/(1<<conf.precision)
@@ -134,12 +134,12 @@ class functionalities:
 		# 	# x = np.uint64(-1*np.uint64(np.int64(-1*x)/scale))
 		# return x
 		if(conf.partyNum==0):
-			x = np.uint64(x)/scale
+			x = x/scale
 		else: 
-			# x = 2**conf.l - x
-			# x = math.floor((x)/scale)
-			# x = 2**conf.l - x
-			x = np.uint64(-1*np.uint64(np.int64(-1*x)/scale))
+			x = 2**conf.l - x
+			x = math.floor((x)/scale)
+			x = 2**conf.l - x
+			# x = np.uint64(-1*np.uint64(np.int64(-1*x)/scale))
 		return np.uint64(x)
 
 	def addvectors(A,B):

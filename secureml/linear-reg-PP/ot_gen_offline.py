@@ -25,15 +25,15 @@ class mult_triplets:
 			for i in range(len(A)):
 				if(conf.partyNum==0):
 					r = np.array(np.random.random(size=(conf.NUM_BITS,)))
-				f_r = np.array(np.uint64(A[i][0]*(math.pow(2,p))+r[p]) for p in range(conf.NUM_BITS))
+					f_r = np.array(np.uint64(A[i][0]*(math.pow(2,p))+r[p]) for p in range(conf.NUM_BITS))
 				for j in range(B.shape[0]):
 					b = []
 					for k in range(conf.NUM_BITS):
 						if(conf.partyNum == 0):
-							m = group.random(ZR) # random element from Z_R_q
+							m = group1.random(ZR) # random element from Z_R_q
 							u = (g**m)
 
 						else:
-							x = "{0:b}".format(B[j][0])
-							x = x.rjust(64,'0')
-							b = [int(p) for p in x]
+							x = ("{0:b}".format(B[j][0])).rjust(64,'0') # bitdecompostion of B_j
+							b = [int(p) for p in x] # convert the bit string to int list
+							
