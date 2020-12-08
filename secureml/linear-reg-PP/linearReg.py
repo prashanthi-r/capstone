@@ -47,9 +47,10 @@ class linearReg:
 		conf.n = len(Y)
 		conf.d = len(X[0])
 		conf.t = conf.n
-		# print("n: ",conf.n)
-		# print("d: ",conf.d)
-		# print("t: ",conf.t)
+		print("n: ",conf.n)
+		print("d: ",conf.d)
+		print("t: ",conf.t)
+		print("length X: ", len(X))
 
 
 		with open(filename_mask,'r') as f:
@@ -76,22 +77,8 @@ class linearReg:
 
 	def SGDLinear(X,Y,U,V,VDash,Z,ZDash):
 		
-		#ZDash = (np.matmul(np.array(U).transpose,VDash).tolist())
-		# print(np.array(X))
-		# print(np.array(U))
-		# print(np.array(Y))
 		X = (np.array(X, dtype = np.uint64))
 		Y = (np.array(Y, dtype = np.uint64))
-
-		# print("Y: ", Y)
-		# Y2 = func.reconstruct(Y.tolist())
-		# Y2 = np.array(Y2,dtype = np.uint64)
-		# Y_f = np.add(Y, np.array(Y2))
-		# print("Reconstructed Y: ")
-
-		# for i in Y_f:
-			# print(func.int64tofloat(i))
-
 		U = np.array(U, dtype = np.uint64)
 		V = np.array(V, dtype = np.uint64)
 		VDash = np.array(VDash, dtype = np.uint64)
@@ -101,21 +88,19 @@ class linearReg:
 		E1 = np.uint64(np.subtract(X,U))
 		E2 = np.uint64(func.reconstruct(E1.tolist()))
 		E = np.uint64(np.add(E1,np.array(E2, dtype = np.uint64)))
+		
 		# randomly initialise weights vector
 		weights = np.array((np.random.rand(conf.d)))
 		weights = weights.reshape(conf.d,1)
-		# print('Weights: ',weights)
-		# weights2 = func.reconstruct(weights)
+		weights2 = func.reconstruct(weights)
 
-		# wts = weights+weights2
-		# print("Initial weights: ")
-		# print(wts)
-
+		wts = weights+weights2
+		print("Initial weights: ")
+		print(wts)
 
 		weights = np.array(func.floattoint64(weights), dtype = np.uint64)
 		# print(weights)
 
-		# print(Y)
 		for e in range(conf.epochs):
 			# print("e: ", e)
 			loss = 0.0
@@ -123,16 +108,10 @@ class linearReg:
 			for j in range(conf.t): 
 				X_B = np.array(X[j:j+conf.batchsize], dtype = np.uint64)
 				Y_B = np.array([Y[j:j+conf.batchsize]], dtype = np.uint64).transpose()
-				
-				# print("X_B: ", X_B)
+
 				xb2 = func.reconstruct(X_B.tolist())
 				xb2 = np.array(xb2,dtype = np.uint64)
-				# print("xb2: ",xb2)
 				xb = np.add(X_B, np.array(xb2))
-				# print("xb: ", xb)
-				# print("x after reconstruction:", func.int64tofloat(xb[0][0]))
-				# for i in xb[0]:
-				# 	print(func.int64tofloat(i)) 
 
 				E_B = np.array(E[j:j+conf.batchsize], dtype = np.uint64)
 				V_j = np.array([V[:,j]], dtype = np.uint64).transpose()	# d*1
@@ -141,40 +120,23 @@ class linearReg:
 				Zdash_j = np.array([ZDash[:,j]], dtype = np.uint64).transpose()
 
 				F1 = (np.subtract(weights,V_j))
-				F2 = func.reconstruct(F1.tolist())
-				F = (np.add(F1,np.array(F2, dtype = np.uint64))) #d*1 as its weights-V_j (both of dim d*1)
-				# print("Vj shape: ",V_j.shape)
-				# print("Zj shape: ",Z_j.shape)
+				F2 = np.array(func.reconstruct(F1.tolist()), dtype = np.uint64)
+				F = np.array(np.add(F1,F2), dtype = np.uint64) #d*1 as its weights-V_j (both of dim d*1)
 
-				YB_dash = func.matrixmul_reg(X_B,weights,E_B,F,V_j,Z_j) #|B|*1
-				# print('YB Dash shape: ',YB_dash.shape)					
+				YB_dash = func.matrixmul_reg(X_B,weights,E_B,F,V_j,Z_j) #|B|*1				
 
 				D_B = (np.subtract(YB_dash,Y_B))
-				# print("Y_B: ",Y_B)
-				# print("Y_B shape: ", Y_B.shape)
-				# print("YB_dash: ",YB_dash)
-				# print("D_B: ",D_B)
 
-				YB_dash[0][0] = func.truncate(YB_dash[0][0],conf.converttoint64)
 				# computing loss
 				yb2 = func.reconstruct(Y_B.tolist())
-				# print("yb2: ",yb2)
-				# print("yb2 shape: ", np.array(yb2, dtype = np.uint64).shape)
 				y = (np.add(Y_B,np.array(yb2, dtype = np.uint64)))
 				y = func.int64tofloat(y[0][0])
 				# print("After int to float, y:", y)
 				
 				#################################################### Computing loss ###################################################################
-				
-				# ybdash = (np.uint64(YB_dash))
-				# print(ybdash)
+			
 				ybdash2 = func.reconstruct(YB_dash.tolist())
-				# print("ybdash2: ",ybdash2)
-				y_hat = (np.add(YB_dash,np.array(ybdash2, dtype = np.uint64)))
-				# print("y_hat: ", np.array(y_hat, dtype = np.uint64))
-				# y_hat = y_hat[0][0]
-				# y_hat = (np.add(YB_dash,np.array(ybdash2, dtype = np.uint64)))
-				
+				y_hat = (np.add(YB_dash,np.array(ybdash2, dtype = np.uint64)))				
 				y_hat = (func.int64tofloat(y_hat[0][0]))
 				# print("y_hat: ", y_hat)
 				
@@ -192,52 +154,17 @@ class linearReg:
 				X_BT = np.array(X_B, dtype = np.uint64).transpose() 
 				E_BT = np.array(E_B, dtype = np.uint64).transpose()
 
-				# print('EBT shape : ',E_BT.shape)
-				# print('Fdash shape : ',FDash.shape)
-				# print('DB shape : ',D_B.shape)
-				# print("Vdashj shape: ",Vdash_j.shape)
-				# print("Zdashj shape: ",Zdash_j.shape)
-				# print("ZDash: ", Zdash_j)
-
 				Del_J = func.matrixmul_reg(X_BT,D_B,E_BT,FDash,Vdash_j,Zdash_j) # the partial differentiation of the loss function output - dx1
 				
-				# print(Del_J)
-				# print("Before Trunction")
-				# DelJ2 = func.reconstruct(Del_J)
-
-				# delta = DelJ2+Del_J
-				# # print(": ")
-				# print(delta)
-
-				# for i in range(conf.d):
-				# 	Del_J[i][0] = func.truncate(Del_J[i][0],conf.converttoint64)
-			
-				# DelJ2 = func.reconstruct(Del_J)
-
-				# delta = DelJ2+Del_J
-				# print("After truncation: ")
-				# print(Del_J)
-					
-				# print("Alpha: ",alpha)
-				# print(gradient.shape)
-				# print("Trunction of Del")
-
+				red = func.floattoint64(conf.alpha)
 				for i in range(conf.d):
-					Del_J[i][0] = func.truncate(Del_J[i][0],conf.converttoint64)
-					Del_J[i][0] = func.truncate(Del_J[i][0],func.floattoint64(conf.alpha_inv*(conf.batchsize)))
-					
+					Del_J[i][0] = np.multiply(Del_J[i][0],red)
+					Del_J[i][0] = np.uint64(func.int64tofloat(Del_J[i][0]))
 
 				weights = ((np.subtract(np.array(weights, dtype = np.uint64),Del_J)))
-				
-				# for i in range(conf.d):
-				# 	print(func.int64tofloat(weights[i][0]))
 			
 			if e == 0 or e==conf.epochs-1: 
-				print("Loss: ", float(loss))
-
-		
-		# for i in range(conf.d):
-			# weights[i][0] = func.int64tofloat(weights[i][0])
+				print("Loss: ", float(loss)/(conf.n))
 		
 		################# Reconstructed final weights #############################################
 		

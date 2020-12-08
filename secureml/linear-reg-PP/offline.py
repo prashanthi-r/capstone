@@ -3,6 +3,7 @@ import numpy as np
 import phe as paillier
 from Config import Config as conf
 import math
+import sys
 
 class offline:
 
@@ -38,7 +39,8 @@ class offline:
 			c_0 = np.matmul(A,B) #A0B0 for S0 and A1B1 for S1 // np.uint64()
 			# print("C_0.shape: ", c_0.shape)
 			encrypted_B = offline.encrypt_vector(pubkey, B) #S1 encrypts B1 for A0B1 and S0 encrypts B0 A1B0
-			
+			# print("B[1]: ", sys.getsizeof(encrypted_B[1]))
+			# print("type of ")
 			other_B = np.array(func.reconstruct(encrypted_B.tolist()))
 			other_B = other_B.reshape(V.shape[0],1) #B is d*1 or 1*1 for Vdash
 			if (flag == 0):

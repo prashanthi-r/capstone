@@ -2,7 +2,7 @@ import random
 import numpy as np
 from Config import Config as conf
 from functionalities import functionalities as func
-#from sklearn.datasets import load_boston
+from sklearn.datasets import load_boston
 
 n = 6
 d = 2
@@ -26,7 +26,7 @@ def check_uvz():
     # d = d+1
     mask0 = []
     mask1 = []
-    with open("mask0.txt",'r') as f1:
+    with open("mask_toy0.txt",'r') as f1:
         for line in f1:
             row=line.split()
             row=[int(i, base=10) for i in row]
@@ -39,7 +39,7 @@ def check_uvz():
     Z0 = np.array(mask0[n+d+2:n+d+3], dtype = np.uint64)
     Zdash0 = np.array(mask0[n+d+3:], dtype = np.uint64)
 
-    with open("mask1.txt",'r') as f2:
+    with open("mask_toy1.txt",'r') as f2:
         for line in f2:
             row=line.split()
             row=[int(i, base=10) for i in row]
@@ -56,9 +56,9 @@ def check_uvz():
     U = np.add(U0,U1)
     V = np.add(V0,V1)
     z = np.add(Z0,Z1)
-    print(U.shape)
-    print(V.shape)
-    print(z.shape)
+    # print(U.shape)
+    # print(V.shape)
+    # print(z.shape)
 
     Z = np.zeros((1,t),dtype=np.uint64)
     for i in range(len(U)):
@@ -68,7 +68,7 @@ def check_uvz():
     if(cmp.all):
         print("yes, the shares of z add up!")
 
-    print(Z)
+    # print(Z)
 
 
     # mask = []
@@ -112,11 +112,11 @@ def generatedata():
 def saveData(serverNum,u,v,v_dash=np.array(None),z=np.array(None),z_dash=np.array(None)): #xy
 
     if serverNum!= 0 and serverNum!= 1:
-        datafile='data.txt'
-        maskfile='mask.txt'
+        datafile='data_toy.txt'
+        maskfile='mask_toy.txt'
     else:
-        datafile = 'data' + str(serverNum) + '.txt' 
-        maskfile = 'mask' + str(serverNum) + '.txt'
+        datafile = 'data_toy' + str(serverNum) + '.txt' 
+        maskfile = 'mask_toy' + str(serverNum) + '.txt'
 
     if(v_dash.any()==None and z.any()==None and z_dash.any()==None):
         with open(datafile,'w+') as df:
@@ -133,19 +133,23 @@ def saveData(serverNum,u,v,v_dash=np.array(None),z=np.array(None),z_dash=np.arra
 
 def check_shares(x1,x2,X):
     sx = (np.add(x1,x2))
-    print("Sum:",sx)
-    print("Data: ",X)
+    # print("Sum:",sx)
+    # print("Data: ",X)
 
 
 def main():
     # X, Y = load_boston(return_X_y=True)
-    # X = np.uint64(conf.converttoint64*np.array(X[:8])).tolist()
-    # Y = np.uint64(conf.converttoint64*np.array(Y[:8]))
+    # X = np.array(X[:n])
+    # Y = np.array(Y[:n])
+    # X = np.uint64(conf.converttoint64*np.array(X[:2])).tolist()
+    # Y = np.uint64(conf.converttoint64*np.array(Y[:2]))
     X = [[4,1],[2,8],[1,0],[3,2],[1,4],[6,7]]
     X = np.array(X, dtype = np.uint64)
     X = func.floattoint64(X)
     Y = [2,-14,1,-1,-7,-8]
     Y = np.array(Y, dtype = np.uint64)
+    
+    # print(len(Y))
     Y = func.floattoint64(Y)
     Y = Y.reshape(len(Y),1)
     
@@ -155,8 +159,8 @@ def main():
     # print("X_2's shape: ",X_2.shape)
     # print("Y:",Y)
     Y_1,Y_2 = split_shares(Y,len(Y),1)
-    print("Y_1: ",Y_1)
-    print("Y_2: ",Y_2)
+    # print("Y_1: ",Y_1)
+    # print("Y_2: ",Y_2)
     check_shares(Y_1,Y_2,Y)
     # print("Y_1's shape: ",Y_1.shape)
     # print("Y_2's shape: ",Y_2.shape)

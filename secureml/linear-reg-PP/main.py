@@ -5,7 +5,7 @@ from linearReg import linearReg as linearReg
 from offline import offline as off
 import numpy as np
 from testmatmul import testmatmul as test
-
+from ot_gen_offline import ot_gen_offline as ot
 # command line argument - partyNum, integer input a, integer input b, mask value
 # main
 def main():
@@ -41,83 +41,87 @@ def main():
 	# filename_mask = str(sys.argv[3])
 
 	if conf.partyNum==0:
-		filename_data='data0.txt'
-		filename_mask='mask0.txt'
+		filename_data='data_toy0.txt'
+		filename_mask='mask_toy0.txt'
 	else:
-		filename_data='data1.txt'
-		filename_mask='mask1.txt'
+		filename_data='data_toy1.txt'
+		filename_mask='mask_toy1.txt'
 
 	X,Y,U,V,Vdash,Z,Zdash = linearReg.readData(filename_data,filename_mask) #technically gen data should be just splitting data
 	
-	U = np.random.rand(conf.n, conf.d)
-	V = np.random.rand(conf.d,conf.t)
-	Vdash = np.random.rand(conf.batchsize,conf.t)
+	U = np.uint64(np.random.uniform(0, (2**conf.l), (conf.n,conf.d)))
+	V = np.uint64(np.random.uniform(0, (2**conf.l), (conf.d,conf.t)))
+	# U = np.random.rand(conf.n, conf.d)
+	# V = np.random.rand(conf.d,conf.t)
+	# Vdash = np.random.rand(conf.batchsize,conf.t)
 
 	# print("My U: ",U)
 	# print("My Vdash: ",Vdash)
 
-	########Reconstruct to check#########
-	U2 = np.array(func.reconstruct(U.tolist()))
-	U2 = U2.reshape(conf.n,conf.d)
-	u = np.add(U,U2)
+	# #######Reconstruct to check#########
+	# U2 = np.array(func.reconstruct(U.tolist()))
+	# U2 = U2.reshape(conf.n,conf.d)
+	# u = np.add(U,U2)
 
-	V2 = np.array(func.reconstruct(V.tolist()))
-	V2 = V2.reshape(conf.d,conf.t)
-	v = np.add(V,V2)	
+	# V2 = np.array(func.reconstruct(V.tolist()))
+	# V2 = V2.reshape(conf.d,conf.t)
+	# v = np.add(V,V2)	
 
-	Vdash2 = np.array(func.reconstruct(Vdash.tolist()))
-	Vdash2 = Vdash2.reshape(conf.batchsize,conf.t)
-	vdash = np.add(Vdash,Vdash2)
+	# Vdash2 = np.array(func.reconstruct(Vdash.tolist()))
+	# Vdash2 = Vdash2.reshape(conf.batchsize,conf.t)
+	# vdash = np.add(Vdash,Vdash2)
 
-	# print('U: ',u)
-	# print('V:', v)
-	# print('Vdash: ',vdash)
+	# # print('U: ',u)
+	# # print('V:', v)
+	# # print('Vdash: ',vdash)
 
-	#######Actual values of Z and Zdash########
-	z = np.zeros((1,conf.t))
-	zdash = np.zeros((conf.d,conf.t))
-	for i in range(len(u)):
-		z[:,i]= np.array((np.matmul(u[i],v[:,i])))
-	# print("Actual mult z: ", z)
+	# #######Actual values of Z and Zdash########
+	# z = np.zeros((1,conf.t))
+	# zdash = np.zeros((conf.d,conf.t))
+	# for i in range(len(u)):
+	# 	z[:,i]= np.array((np.matmul(u[i],v[:,i])))
+	# # print("Actual mult z: ", z)
 	
-	for i in range(len(u)):
-		u_row_tranpose = np.transpose(np.matrix(u[i]))
-		zdash[:,i]=np.array(np.matmul(u_row_tranpose,vdash[:,i]))
+	# for i in range(len(u)):
+	# 	u_row_tranpose = np.transpose(np.matrix(u[i]))
+	# 	zdash[:,i]=np.array(np.matmul(u_row_tranpose,vdash[:,i]))
 	
 	# print("Actual mult zdash: ", zdash)
 
 	######LHE generation of Z and Zdash shares#####
 	flag = 0 # generate Z
-	Z=off.lhe(np.array(U),np.array(V),flag)
-	# print('my Z: ',Z)
+	# Z=off.lhe(np.array(U),np.array(V),flag)
+	Z = ot.trip_gen(np.array(U),np.array(V),flag)
+	# # print('my Z: ',Z)
 
-	flag = 1 # generate Zdash
-	Zdash=off.lhe(np.array(U),np.array(Vdash),flag)
-
+	# flag = 1 # generate Zdash
+	# # Zdash=off.lhe(np.array(U),np.array(Vdash),flag)
+	# # Z = ot.trip_gen(np.array(U),np.array(V),flag)
 	
-	#######RECONSTRUCT Z AND ZDASH TO VERIFY########
-	Z2 = np.array(func.reconstruct(Z.tolist()))
-	Z2 = Z2.reshape(1,conf.t)
-	Z_f = np.add(Z,Z2)
+	# #######RECONSTRUCT Z AND ZDASH TO VERIFY########
+	# Z2 = np.array(func.reconstruct(Z.tolist()))
+	# Z2 = Z2.reshape(1,conf.t)
+	# Z_f = np.add(Z,Z2)
 
-	# print("reconstructed Z: ", Z_f)
+	# # print("reconstructed Z: ", Z_f)
 
-	Zdash2 = np.array(func.reconstruct(Zdash.tolist()))
-	Zdash2 = Zdash2.reshape(conf.d,conf.t)
-	Zdash_f = np.add(Zdash,Zdash2)
+	# Zdash2 = np.array(func.reconstruct(Zdash.tolist()))
+	# Zdash2 = Zdash2.reshape(conf.d,conf.t)
+	# Zdash_f = np.add(Zdash,Zdash2)
 
-	# print("reconstructed Zdash: ", Zdash_f)
-	# print(Zdash)
+	# # print("reconstructed Zdash: ", Zdash_f)
+	# # print(Zdash)
 
-	###### PREPARING MASKS FOR LINEAR REG #######
-	U = func.floattoint64(U)
-	V = func.floattoint64(V)
-	Vdash = func.floattoint64(Vdash)
-	Z = func.floattoint64(Z)
-	Zdash = func.floattoint64(Zdash)
-	model = linearReg.SGDLinear(X,Y,U,V,Vdash,Z,Zdash)
+	# ###### PREPARING MASKS FOR LINEAR REG #######
+	# U = func.floattoint64(U)
+	# V = func.floattoint64(V)
+	# Vdash = func.floattoint64(Vdash)
+	# Z = func.floattoint64(Z)
+	# Zdash = func.floattoint64(Zdash)
+	
+	# model = linearReg.SGDLinear(X,Y,U,V,Vdash,Z,Zdash)
 
-	# print(model)
+	# # print(model)
 	# print("\n[",end=" ")
 	# for i in range(conf.d):
 	# 	print(func.int64tofloat(model[i]),end=",")

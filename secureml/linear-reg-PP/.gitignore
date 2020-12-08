@@ -5,4 +5,6 @@
 /mask0.txt
 /mask1.txt
 /virtual-env
-/__pycache__
+/__pycache_
+/charm
+/pbc-0.5.14_
