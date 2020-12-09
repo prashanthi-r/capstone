@@ -41,19 +41,27 @@ def main():
 	# filename_mask = str(sys.argv[3])
 
 	if conf.partyNum==0:
-		filename_data='data_toy0.txt'
-		filename_mask='mask_toy0.txt'
+		filename_data='data0.txt'
+		filename_mask='mask0.txt'
 	else:
-		filename_data='data_toy1.txt'
-		filename_mask='mask_toy1.txt'
+		filename_data='data1.txt'
+		filename_mask='mask1.txt'
 
+	print("============================================================")
+	print("====================SERVER "+str(conf.partyNum)+"================================")
+	print("============================================================")
+
+	print("\nReading input data from",filename_data)
 	X,Y,U,V,Vdash,Z,Zdash = linearReg.readData(filename_data,filename_mask) #technically gen data should be just splitting data
+
 	
-	U = np.uint64(np.random.uniform(0, (2**conf.l), (conf.n,conf.d)))
-	V = np.uint64(np.random.uniform(0, (2**conf.l), (conf.d,conf.t)))
-	# U = np.random.rand(conf.n, conf.d)
-	# V = np.random.rand(conf.d,conf.t)
-	# Vdash = np.random.rand(conf.batchsize,conf.t)
+	# U = np.uint64(np.random.uniform(0, (2**conf.l), (conf.n,conf.d)))
+	# V = np.uint64(np.random.uniform(0, (2**conf.l), (conf.d,conf.t)))
+	U = np.random.rand(conf.n, conf.d)
+	V = np.random.rand(conf.d,conf.t)
+	print("\nGENERATING BEAVER'S TRIPLETS LHE...")
+
+	Vdash = np.random.rand(conf.batchsize,conf.t)
 
 	# print("My U: ",U)
 	# print("My Vdash: ",Vdash)
@@ -71,16 +79,16 @@ def main():
 	# Vdash2 = Vdash2.reshape(conf.batchsize,conf.t)
 	# vdash = np.add(Vdash,Vdash2)
 
-	# # print('U: ',u)
-	# # print('V:', v)
-	# # print('Vdash: ',vdash)
+	# print('U: ',u)
+	# print('V:', v)
+	# print('Vdash: ',vdash)
 
 	# #######Actual values of Z and Zdash########
 	# z = np.zeros((1,conf.t))
 	# zdash = np.zeros((conf.d,conf.t))
 	# for i in range(len(u)):
 	# 	z[:,i]= np.array((np.matmul(u[i],v[:,i])))
-	# # print("Actual mult z: ", z)
+	# print("Actual mult z: ", z)
 	
 	# for i in range(len(u)):
 	# 	u_row_tranpose = np.transpose(np.matrix(u[i]))
@@ -88,22 +96,26 @@ def main():
 	
 	# print("Actual mult zdash: ", zdash)
 
+	# OT
+	# U = func.floattoint64(U)
+	# V = func.floattoint64(V)
+
 	######LHE generation of Z and Zdash shares#####
 	flag = 0 # generate Z
-	# Z=off.lhe(np.array(U),np.array(V),flag)
-	Z = ot.trip_gen(np.array(U),np.array(V),flag)
+	Z=off.lhe(np.array(U),np.array(V),flag)
+	# Z = ot.trip_gen(np.array(U),np.array(V),flag)
 	# # print('my Z: ',Z)
 
-	# flag = 1 # generate Zdash
-	# # Zdash=off.lhe(np.array(U),np.array(Vdash),flag)
-	# # Z = ot.trip_gen(np.array(U),np.array(V),flag)
+	flag = 1 # generate Zdash
+	Zdash=off.lhe(np.array(U),np.array(Vdash),flag)
+	# Z = ot.trip_gen(np.array(U),np.array(V),flag)
 	
 	# #######RECONSTRUCT Z AND ZDASH TO VERIFY########
 	# Z2 = np.array(func.reconstruct(Z.tolist()))
 	# Z2 = Z2.reshape(1,conf.t)
 	# Z_f = np.add(Z,Z2)
 
-	# # print("reconstructed Z: ", Z_f)
+	# print("reconstructed Z: ", Z_f)
 
 	# Zdash2 = np.array(func.reconstruct(Zdash.tolist()))
 	# Zdash2 = Zdash2.reshape(conf.d,conf.t)
@@ -111,21 +123,21 @@ def main():
 
 	# # print("reconstructed Zdash: ", Zdash_f)
 	# # print(Zdash)
-
+	print("\nTRIPTLETS GENERATED!")
 	# ###### PREPARING MASKS FOR LINEAR REG #######
-	# U = func.floattoint64(U)
-	# V = func.floattoint64(V)
-	# Vdash = func.floattoint64(Vdash)
-	# Z = func.floattoint64(Z)
-	# Zdash = func.floattoint64(Zdash)
+	U = func.floattoint64(U)
+	V = func.floattoint64(V)
+	Vdash = func.floattoint64(Vdash)
+	Z = func.floattoint64(Z)
+	Zdash = func.floattoint64(Zdash)
 	
-	# model = linearReg.SGDLinear(X,Y,U,V,Vdash,Z,Zdash)
-
-	# # print(model)
-	# print("\n[",end=" ")
-	# for i in range(conf.d):
-	# 	print(func.int64tofloat(model[i]),end=",")
-	# print("]")
+	model = linearReg.SGDLinear(X,Y,U,V,Vdash,Z,Zdash)
+	model = model.tolist()
+	print("\n\nFINAL (RECONSTRUCTED) MODEL: ")
+	
+	for i in range(conf.d):
+		model[i] = func.int64tofloat(model[i][0])
+	print(model)
 	# print('Before truncate Model: ',model)
 	# model = func.truncate(model)
 	# print('After truncate Model: ',model)

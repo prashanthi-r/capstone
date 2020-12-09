@@ -47,10 +47,10 @@ class linearReg:
 		conf.n = len(Y)
 		conf.d = len(X[0])
 		conf.t = conf.n
-		print("n: ",conf.n)
-		print("d: ",conf.d)
-		print("t: ",conf.t)
-		print("length X: ", len(X))
+		# print("n: ",conf.n)
+		# print("d: ",conf.d)
+		# print("t: ",conf.t)
+		# print("length X: ", len(X))
 
 
 		with open(filename_mask,'r') as f:
@@ -76,7 +76,7 @@ class linearReg:
 		return X,Y,U,V,Vdash,Z,Zdash
 
 	def SGDLinear(X,Y,U,V,VDash,Z,ZDash):
-		
+		print("Training the model...")
 		X = (np.array(X, dtype = np.uint64))
 		Y = (np.array(Y, dtype = np.uint64))
 		U = np.array(U, dtype = np.uint64)
@@ -95,7 +95,7 @@ class linearReg:
 		weights2 = func.reconstruct(weights)
 
 		wts = weights+weights2
-		print("Initial weights: ")
+		print("Initial (reconstructed) weights: ")
 		print(wts)
 
 		weights = np.array(func.floattoint64(weights), dtype = np.uint64)
@@ -163,9 +163,17 @@ class linearReg:
 
 				weights = ((np.subtract(np.array(weights, dtype = np.uint64),Del_J)))
 			
-			if e == 0 or e==conf.epochs-1: 
-				print("Loss: ", float(loss)/(conf.n))
-		
+			if e == 0: 
+				print("Initial Loss: ",end=" ")
+				print(float(loss)/(conf.n))
+			if e==conf.epochs-1:
+				print("\nTraining completed.")
+				print("\nFinal Loss: ",end=" ")
+				print(float(loss)/(conf.n))
+
+	
+		print("My share of the final model: ")
+		print(weights)
 		################# Reconstructed final weights #############################################
 		
 		weights2 = func.reconstruct(weights.tolist())

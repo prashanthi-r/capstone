@@ -26,11 +26,11 @@ class functionalities:
 			
 		return float(y)/(scale)
 
-	def send_file(file_info,filename):
+	def send_file(file_info,filename,sz):
 		with open(filename,"w+") as f:
 			f.write("".join(str(file_info)))
 		filesize = os.path.getsize(filename)
-		print("filesize: ", filesize)
+		# print("filesize: ", filesize)
 		SEPARATOR = "--"
 		BUFFER_SIZE = 4096
 
@@ -53,27 +53,27 @@ class functionalities:
 	
 			client.send(f"{filename}{SEPARATOR}{filesize}".encode())
 		
-			print(f"Sending {filename}")
+			# print(f"Sending {filename}")
 			with open(filename, "rb") as f:
 				bytes_read = f.read(filesize)		
 				client.sendall(bytes_read)
 
-			print("Sent! Now receiving...")
+			# print("Sent! Now receiving...")
 			
 			# receive file
 
-			received = client.recv(14).decode()
-			print(received)
+			received = client.recv(sz).decode()
+			# print(received)
 			fname, fsize = received.split(SEPARATOR)
 			b = math.ceil(int(fsize)/BUFFER_SIZE)
-			print(b)
-			print(f"Receiving other_{filename}")
+			# print(b)
+			# print(f"Receiving other_{filename}")
 			with open(str("other_")+filename, "wb") as f:
 				bytes_read = client.recv(int(fsize))
 				f.write(bytes_read)
 				f.flush()	
 		
-			print("Received")
+			# print("Received")
 			client.close()
 			ssock.close()
 
@@ -88,34 +88,33 @@ class functionalities:
 				except: 
 					continue
 			# receive file
-			received = csock.recv(14).decode()
-			print(received)
+			received = csock.recv(sz).decode()
+			# print(received)
 			fname, fsize = received.split(SEPARATOR)
 			b = math.ceil(int(fsize)/BUFFER_SIZE)
-			print(b)
-			print(f"Receiving other_{filename}")
+			# print(b)
+			# print(f"Receiving other_{filename}")
 			with open(str("other_")+filename, "wb") as f:
 				bytes_read = csock.recv(int(fsize))
 				f.write(bytes_read)
 				f.flush()						
-			print("Received")
+			# print("Received")
 					
 			# send file
 
 			csock.send(f"{filename}{SEPARATOR}{filesize}".encode())
-			print(f"Sending {filename}")
+			# print(f"Sending {filename}")
 			with open(filename, "rb") as f:
-				
 				bytes_read = f.read(filesize)			
 				csock.sendall(bytes_read)
-			print("Sent!")
-			print("Returning...")
-			
+			# print("Sent!")
 			csock.close()
+
+		# print("Returning...")
 		return
 
 	def send_val(send_info):
-		print("Size of send info: ",sys.getsizeof(send_info))
+		# print("Size of send info: ",sys.getsizeof(send_info))
 		if(conf.partyNum == 0):
 			ssock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 			ssock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -129,13 +128,11 @@ class functionalities:
 					break
 				except:
 					continue
-
+			# client, addr = ssock.accept()
+			# print("Size of send val: ",sys.getsizeof(send_info))
 			recv_info = client.recv(4096)
-
 			recv_info = pickle.loads(recv_info)
-			print("Done! Sending....")
 			client.send(pickle.dumps(send_info))
-			# print("Sent!")
 			client.close()
 			ssock.close()
 		else: 
@@ -147,12 +144,13 @@ class functionalities:
 					break
 				except: 
 					continue
-			
+			# csock.connect((conf.advIP,conf.advPORT))
+			# csock.setblocking(True)		
+			# print("Size of send val: ",sys.getsizeof(send_info))
 			csock.send(pickle.dumps(send_info))
-			print("Sent!")
 			recv_info = pickle.loads(csock.recv(4096))
+			# csock.shutdown(socket.SHUT_RDWR)
 			csock.close()
-		
 		return recv_info
 
 	def addshares(a, b, mask):

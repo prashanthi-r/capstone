@@ -15,6 +15,9 @@ class Config:
 	converttoint64 = (1<<precision)
 	trunc_parameter = (1>>precision)
 	epochs = 10
+	OT = 0
+	LHE = 1
+	TRIPLET_GEN_MODE = OT
 	
 	# data specific
 
