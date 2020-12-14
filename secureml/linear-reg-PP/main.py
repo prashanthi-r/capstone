@@ -6,53 +6,24 @@ from offline import offline as off
 import numpy as np
 from testmatmul import testmatmul as test
 from ot_gen_offline import ot_gen_offline as ot
-# command line argument - partyNum, integer input a, integer input b, mask value
-# main
+
 def main():
 	conf.partyNum = int(sys.argv[1])
-	#print(conf.partyNum)
 	if conf.partyNum == 0:
 		conf.PORT = 8004
 		conf.advPORT = 8005
+		filename_data='data0.txt'
 	else: 
 		conf.PORT = 8005
 		conf.advPORT = 8004
-
-	# test.test()
-	
-	############# add float shares ################
-	# a = float(sys.argv[2])
-	# b = float(sys.argv[3])
-	# u = float(sys.argv[4])
-	# output = addshares(a,b,u)
-	# print(output)
-
-	############ multiply float shares ##############
-	# a = float(sys.argv[2])
-	# b = float(sys.argv[3])
-	# u = float(sys.argv[4])
-	# v = float(sys.argv[5])
-	# z = float(sys.argv[6])
-	# output_mul = multiplyshares(a,b,u,v,z)
-	# print(output_mul)
-
-	############ linear regression ############
-	# filename_data = str(sys.argv[2])
-	# filename_mask = str(sys.argv[3])
-
-	if conf.partyNum==0:
-		filename_data='data0.txt'
-		filename_mask='mask0.txt'
-	else:
-		filename_data='data1.txt'
-		filename_mask='mask1.txt'
+		filename_data='data1.txt'	
 
 	print("============================================================")
 	print("====================SERVER "+str(conf.partyNum)+"================================")
 	print("============================================================")
 
 	print("\nReading input data from",filename_data)
-	X,Y,U,V,Vdash,Z,Zdash = linearReg.readData(filename_data,filename_mask) #technically gen data should be just splitting data
+	X,Y = linearReg.readData(filename_data,filename_mask)
 
 	
 	# U = np.uint64(np.random.uniform(0, (2**conf.l), (conf.n,conf.d)))
@@ -138,10 +109,6 @@ def main():
 	for i in range(conf.d):
 		model[i] = func.int64tofloat(model[i][0])
 	print(model)
-	# print('Before truncate Model: ',model)
-	# model = func.truncate(model)
-	# print('After truncate Model: ',model)
-
 
 if __name__ == '__main__':
 	main()

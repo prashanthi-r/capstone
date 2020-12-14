@@ -11,11 +11,12 @@ import os
 
 class functionalities:
 	def floattoint64(x):
-		# print(conf.converttoint64*(x))
+		#maps values to the uint64 world
 		x = np.array(conf.converttoint64*(x), dtype = np.uint64)
 		return x
 
 	def int64tofloat(x,scale=1<<conf.precision):
+		#maps values from the uint64 world back to its original form
 		y=0
 		if(x > (2**(conf.l-1))-1):
 			x = (2**conf.l) - x
@@ -30,91 +31,71 @@ class functionalities:
 		with open(filename,"w+") as f:
 			f.write("".join(str(file_info)))
 		filesize = os.path.getsize(filename)
-		# print("filesize: ", filesize)
 		SEPARATOR = "--"
 		BUFFER_SIZE = 4096
 
 		if(conf.partyNum == 0):
-			# send file
 
 			ssock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 			ssock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 			ssock.bind((conf.IP, conf.PORT))
 			ssock.listen()
-			# ssock.settimeout(30)
 			while True:
 				try:
-					# print('Waiting for connection at : ',conf.IP,conf.PORT)
 					client, addr = ssock.accept()
-					# print('Received connection ')
 					break
 				except:
 					continue
 	
 			client.send(f"{filename}{SEPARATOR}{filesize}".encode())
 		
-			# print(f"Sending {filename}")
 			with open(filename, "rb") as f:
 				bytes_read = f.read(filesize)		
 				client.sendall(bytes_read)
 
-			# print("Sent! Now receiving...")
-			
-			# receive file
-
 			received = client.recv(sz).decode()
-			# print(received)
 			fname, fsize = received.split(SEPARATOR)
 			b = math.ceil(int(fsize)/BUFFER_SIZE)
-			# print(b)
-			# print(f"Receiving other_{filename}")
+	
 			with open(str("other_")+filename, "wb") as f:
 				bytes_read = client.recv(int(fsize))
 				f.write(bytes_read)
 				f.flush()	
 		
-			# print("Received")
 			client.close()
 			ssock.close()
 
 		else:
 			csock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-			# csock.settimeout(30)
 			while True:
 				try:
 					csock.connect((conf.advIP,conf.advPORT))
-					# print("Connected")
 					break
 				except: 
 					continue
-			# receive file
+			
 			received = csock.recv(sz).decode()
-			# print(received)
+			
 			fname, fsize = received.split(SEPARATOR)
 			b = math.ceil(int(fsize)/BUFFER_SIZE)
-			# print(b)
-			# print(f"Receiving other_{filename}")
+			
 			with open(str("other_")+filename, "wb") as f:
 				bytes_read = csock.recv(int(fsize))
 				f.write(bytes_read)
 				f.flush()						
-			# print("Received")
-					
-			# send file
+			
 
 			csock.send(f"{filename}{SEPARATOR}{filesize}".encode())
-			# print(f"Sending {filename}")
 			with open(filename, "rb") as f:
 				bytes_read = f.read(filesize)			
 				csock.sendall(bytes_read)
-			# print("Sent!")
 			csock.close()
 
-		# print("Returning...")
 		return
 
 	def send_val(send_info):
-		# print("Size of send info: ",sys.getsizeof(send_info))
+		#exchange data between two servers
+		#Party 0 - Server , Party 1 - Client
 		if(conf.partyNum == 0):
 			ssock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 			ssock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -122,14 +103,10 @@ class functionalities:
 			ssock.listen()
 			while True:
 				try:
-					# print('Waiting for connection at : ',conf.IP,conf.PORT)
 					client, addr = ssock.accept()
-					# print('Received connection ')
 					break
 				except:
 					continue
-			# client, addr = ssock.accept()
-			# print("Size of send val: ",sys.getsizeof(send_info))
 			recv_info = client.recv(4096)
 			recv_info = pickle.loads(recv_info)
 			client.send(pickle.dumps(send_info))
@@ -140,16 +117,11 @@ class functionalities:
 			while True:
 				try:
 					csock.connect((conf.advIP,conf.advPORT))
-					# print("Connected")
 					break
 				except: 
 					continue
-			# csock.connect((conf.advIP,conf.advPORT))
-			# csock.setblocking(True)		
-			# print("Size of send val: ",sys.getsizeof(send_info))
 			csock.send(pickle.dumps(send_info))
 			recv_info = pickle.loads(csock.recv(4096))
-			# csock.shutdown(socket.SHUT_RDWR)
 			csock.close()
 		return recv_info
 
@@ -230,6 +202,7 @@ class functionalities:
 		return C
 
 	def matrixmul_reg(A,B,E,F,V,Z):
+		# Matrix multiplication using the protocol in the paper
 		# A - data pt
 		# B - weights
 		# E = datapoint - data mask U

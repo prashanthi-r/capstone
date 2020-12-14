@@ -21,11 +21,6 @@ class linearReg:
 		mask=[]
 		X=[]    
 		Y=[]
-		U=[]
-		V=[]
-		V_dash=[] 
-		Z=[]
-		Z_dash=[]
 		
 		i=0
 		with open(filename_data,'r+') as f:
@@ -41,39 +36,13 @@ class linearReg:
 				else:
 					Y.append(np.uint64(row[0].rstrip()))
 			f.close()
-		# print("X: ", X)
-		# print("Y: ",Y)
+		
 
 		conf.n = len(Y)
 		conf.d = len(X[0])
-		conf.t = conf.n
-		# print("n: ",conf.n)
-		# print("d: ",conf.d)
-		# print("t: ",conf.t)
-		# print("length X: ", len(X))
-
-
-		with open(filename_mask,'r') as f:
-			for line in f:
-				row=line.split()
-				row=[int(i, base=10) for i in row]
-				mask.append(row)
-			f.close()
-
-
-		n = conf.n
-		d = conf.d
-		t = conf.t
-		b = conf.batchsize
-
-		U = mask[:n]
-		V = mask[n:n+d]
-		Vdash = mask[n+d: n+d+1]
-		Z = mask[n+d+1:n+d+2]
-		Zdash=mask[n+d+2:]
+		conf.t = conf.n		
 		
-		
-		return X,Y,U,V,Vdash,Z,Zdash
+		return X,Y
 
 	def SGDLinear(X,Y,U,V,VDash,Z,ZDash):
 		print("Training the model...")
@@ -114,16 +83,16 @@ class linearReg:
 				xb = np.add(X_B, np.array(xb2))
 
 				E_B = np.array(E[j:j+conf.batchsize], dtype = np.uint64)
-				V_j = np.array([V[:,j]], dtype = np.uint64).transpose()	# d*1
-				Z_j = np.array([Z[:,j]], dtype = np.uint64).transpose()  	#|B| * 1
+				V_j = np.array([V[:,j]], dtype = np.uint64).transpose()	
+				Z_j = np.array([Z[:,j]], dtype = np.uint64).transpose()  	
 				Vdash_j = np.array([VDash[:,j]], dtype = np.uint64).transpose()
 				Zdash_j = np.array([ZDash[:,j]], dtype = np.uint64).transpose()
 
 				F1 = (np.subtract(weights,V_j))
 				F2 = np.array(func.reconstruct(F1.tolist()), dtype = np.uint64)
-				F = np.array(np.add(F1,F2), dtype = np.uint64) #d*1 as its weights-V_j (both of dim d*1)
+				F = np.array(np.add(F1,F2), dtype = np.uint64) 
 
-				YB_dash = func.matrixmul_reg(X_B,weights,E_B,F,V_j,Z_j) #|B|*1				
+				YB_dash = func.matrixmul_reg(X_B,weights,E_B,F,V_j,Z_j)
 
 				D_B = (np.subtract(YB_dash,Y_B))
 
@@ -131,17 +100,14 @@ class linearReg:
 				yb2 = func.reconstruct(Y_B.tolist())
 				y = (np.add(Y_B,np.array(yb2, dtype = np.uint64)))
 				y = func.int64tofloat(y[0][0])
-				# print("After int to float, y:", y)
 				
 				#################################################### Computing loss ###################################################################
 			
 				ybdash2 = func.reconstruct(YB_dash.tolist())
 				y_hat = (np.add(YB_dash,np.array(ybdash2, dtype = np.uint64)))				
 				y_hat = (func.int64tofloat(y_hat[0][0]))
-				# print("y_hat: ", y_hat)
 				
 				dif = (y_hat - y)
-				# print(dif)
 				loss = loss+(dif*dif)
 
 				#######################################################################################################################################

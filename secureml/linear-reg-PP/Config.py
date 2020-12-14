@@ -4,8 +4,7 @@ import numpy as np
 class Config:
 	PORT = -1
 	partyNum = -1
-	IP = socket.gethostbyname(socket.gethostname())
-	# IP = '192.168.0.152' 
+	IP = socket.gethostbyname(socket.gethostname()) 
 	advIP = IP 
 	advPORT = -1
 	l = 64
