@@ -102,7 +102,7 @@ class linearReg:
 		# print(weights)
 
 		for e in range(conf.epochs):
-			# print("e: ", e)
+			print("EPOCH:", e+1, end="    ")
 			loss = 0.0
 
 			for j in range(conf.t): 
@@ -143,7 +143,6 @@ class linearReg:
 				dif = (y_hat - y)
 				# print(dif)
 				loss = loss+(dif*dif)
-				# print("Loss: ", loss)
 
 				#######################################################################################################################################
 
@@ -166,13 +165,14 @@ class linearReg:
 			if e == 0: 
 				print("Initial Loss: ",end=" ")
 				print(float(loss)/(conf.n))
-			if e==conf.epochs-1:
-				print("\nTraining completed.")
-				print("\nFinal Loss: ",end=" ")
+			elif e==conf.epochs-1:
+				print("Final Loss: ",end=" ")
 				print(float(loss)/(conf.n))
+			else:
+				print("Loss: ", float(loss)/(conf.n))
 
-	
-		print("My share of the final model: ")
+		print("\nTraining complete.")
+		print("\nMy share of the final model: ")
 		print(weights)
 		################# Reconstructed final weights #############################################
 		
